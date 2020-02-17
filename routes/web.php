@@ -25,6 +25,8 @@ Route::get('/home', 'HomeController@index')->name('home');
 
 Route::get('vendor_form/{id}/{vid}', 'QuotationReceivedController@VendorRFQFormData')->name('vendor_form');
 Route::post('vendorformstore/{id}/{vid}', 'QuotationReceivedController@VendorRFQFormDataStore')->name('vendorformstore');
+Route::get('po_accepts/{po_id}/{vid}', 'POSendToVendorsController@POAcceptsByVendor')->name('po_accepts');
+Route::post('po_accepts_data/{po_id}/{vid}', 'POSendToVendorsController@POAcceptsByVendorDataStore')->name('po_accepts_data');
 
 
 /*Route::resource('quotation', 'QuotationController');
@@ -44,7 +46,7 @@ Route::group(['middleware' => ['role:level_1']], function () {
     Route::post('QuotationApprovalL1', 'QuotationReceivedController@QuotationApprovalByL1')->name('QuotationApprovalL1');
 });
 
-Route::group(['middleware' => ['role:lavel_2']], function () {
+Route::group(['middleware' => ['role:level_2']], function() {
     Route::resource('vendor', 'VendorController');
 		Route::resource('/um', 'UnitofmeasurementController');
 		Route::resource('/role', 'RoleController');
@@ -103,6 +105,13 @@ Route::group(['middleware' => ['role:assistant_manager|purchase_manager']], func
 
 Route::group(['middleware' => ['role:users']], function () {
 	//
+});
+
+Route::group(['middleware' => ['role:store_manager']], function () {
+		Route::resource('store_management', 'StoreManagementController');
+		Route::get('view_accepted_po/{id}', 'StoreManagementController@ViewAcceptedPO')->name("view_accepted_po");
+		Route::get('view_grn', 'StoreManagementController@FetchAllGRN')->name("view_grn");
+		Route::get('add_grn', 'StoreManagementController@AddGRN')->name("add_grn");
 });
 
 

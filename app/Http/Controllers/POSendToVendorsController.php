@@ -7,6 +7,10 @@ use Illuminate\Http\Request;
 
 class POSendToVendorsController extends Controller
 {
+		public function __construct()
+    {
+        $this->middleware('auth', ['except' => array('POAcceptsByVendor', 'POAcceptsByVendorDataStore')]);
+    }
     /**
      * Display a listing of the resource.
      *
@@ -81,5 +85,19 @@ class POSendToVendorsController extends Controller
     public function destroy(PO_SendToVendors $pO_SendToVendors)
     {
         //
+    }
+
+    public function POAcceptsByVendor(request $request){
+    		return view("purchase_order.po_accepts");
+    }
+
+    public function POAcceptsByVendorDataStore(request $request, $po_id){
+    		$request->validate([
+            'po_accept_status' => 'required',
+        ]);
+
+        PO_SendToVendors::where('id', $po_id)->where('vendor_id', $request->input('vendor_id'))->update(['po_accept_status'=> $request->input('po_accept_status')]);
+
+        return back()->with('success','Thank You, Your PO acception status has been submited');
     }
 }

@@ -4,8 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Spatie\Permission\Models\Role;
-use Spatie\Permission\Models\Permission;
+use App\Role;
+use App\Permission;
 use Illuminate\Support\Facades\Validator;
 use Auth;
 
@@ -47,7 +47,6 @@ class RoleController extends Controller
     {
         $validation = Validator::make($request->all(), [
             'name' => 'required|unique:roles,name',
-            //'permission' => 'required',
         ]);
         if ($validation->fails())
         {
@@ -56,11 +55,9 @@ class RoleController extends Controller
         else
         { 
         	$type = explode(" ",$request->input('name'));
-        	$slug = strtolower(implode('_',$type));
-	        $role = Role::create(['name' => $slug, 'slug' => $request->input('name')]);
-	        //$role->syncPermissions($request->input('permission'));
+        	$name = strtolower(implode('_',$type));
+	        $role = Role::create(['name' => $name, 'display_name' => $request->input('name'), 'description' => ""]);
 	        return 'Role Created';
-	        //return redirect()->route('/role')->with('success','Role created successfully');
 	      }
     }
 
@@ -106,10 +103,10 @@ class RoleController extends Controller
         else
         { 
         	$type = explode(" ",$request->input('name'));
-	        $slug = strtolower(implode('_',$type));
+	        $name = strtolower(implode('_',$type));
 	        $role = Role::find($id);
-	        $role->name = $slug;
-	        $role->slug = $request->input('name');
+	        $role->name = $name;
+	        $role->display_name = $request->input('name');
 	        $role->save();
 	        //$role->syncPermissions($request->input('permission'));
 	        return "Role Updated";

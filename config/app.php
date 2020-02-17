@@ -176,7 +176,6 @@ return [
         App\Providers\RouteServiceProvider::class,
         App\Providers\HelperServiceProvider::class,
         Barryvdh\DomPDF\ServiceProvider::class,
-        Spatie\Permission\PermissionServiceProvider::class,
 				Collective\Html\HtmlServiceProvider::class,
 				Maatwebsite\Excel\ExcelServiceProvider::class,
 				Nitmedia\Wkhtml2pdf\L5Wkhtml2pdfServiceProvider::class,
@@ -196,7 +195,6 @@ return [
     */
 
     'aliases' => [
-
         'App' => Illuminate\Support\Facades\App::class,
         'Arr' => Illuminate\Support\Arr::class,
         'Artisan' => Illuminate\Support\Facades\Artisan::class,

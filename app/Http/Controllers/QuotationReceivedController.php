@@ -180,6 +180,13 @@ class QuotationReceivedController extends Controller
     		$level2_status = $request->level2_status;
     		$id = $request->ApprovalId;
     		QuotationApprovals::where('id', $id)->update(['level2_status'=> $level2_status]);
+    		
+    		/*$data = array(
+  					'vendor_id'		=>	$id,
+  					'approval_quotation_id' => $request->approval_quotation_id, 
+  					'po_id'	=>	'#PO'.str_pad($nextval, 4, '0', STR_PAD_LEFT),
+  			);
+  			$datas = PO_SendToVendors::create($data);*/
     }
 
     public function ApprovalQuotation(){
@@ -189,12 +196,7 @@ class QuotationReceivedController extends Controller
             ->orderBy('quotation_approvals.created_at', 'desc')
             ->select('quotation_approvals.*', 'vendors.*', 'vendors_mail_sends.*')
             ->where('quotation_approvals.manager_status', '=', 1)->where('quotation_approvals.level1_status', '=', 1)->where('quotation_approvals.level2_status', '=', 1)->paginate(10);
-
-         	foreach($data as $datas){
-         		$quote_id = $datas->quote_id;
-         		$po_status[] = PO_SendToVendors::where('approval_quotation_id',$quote_id)->get();
-         	}
-        return view('rfq.approval_quotation',compact('data','po_status'))->with('i', (request()->input('page', 1) - 1) * 10);
+        return view('rfq.approval_quotation',compact('data'))->with('i', (request()->input('page', 1) - 1) * 10);
     }
 
     public function ApprovalQuotationItems($id){
@@ -240,6 +242,7 @@ class QuotationReceivedController extends Controller
   				'table' => $request->table,
   				'pdf' => $pdf,
   				'vendor_data' => $vendor,
+  				'po_id' => $nextval,
   			);
   			\Mail::to($vendor->email)->send(new PO_SandsToVendor($details));
 

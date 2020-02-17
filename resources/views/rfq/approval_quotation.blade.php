@@ -4,7 +4,7 @@
 <!-- Begin Page Content -->
 <div class="container-fluid">
   <a href="{{ '/home' }}" class="main-title-w3layouts mb-2 float-right"><i class="fa fa-arrow-left"></i>  Back</a>
-  <h5 class="main-title-w3layouts mb-2">Received Quotation</h5>
+  <h5 class="main-title-w3layouts mb-2">Approved Quotation</h5>
   <div class="card shadow mb-4">
     <div class="card-body">
       <div class="table-responsive">
@@ -52,24 +52,24 @@
 	                	@endif
 	                </td>
 	                <td>
-	                	@if(!empty($po_status))
-	                		@foreach($po_status as $po)
-	                			@foreach($po as $po1)
-	                			<?php 
-	                				$val = $po1->approval_quotation_id;
-	                				if($val == $row->id){
-	                			?>
-												<p class="btn btn-dark disabled">PO Sent</p>
-	                			<?php
-	                				}else{
-	                			?>
-	                  		<a class="btn btn-success" href="{{ route('approvalQuotation_item',$row->id) }}"><i class="fa fa-mail-forward"></i> Send PO</a>
-	                  		<?php } ?>
-	                  		@endforeach
-	                  	@endforeach
-	                  @else
-											
-	                  @endif
+	                	{{-- @if(!empty($po_status)) --}}
+	                	<?php 
+	                		$po_status = App\PO_SendToVendors::where('approval_quotation_id',$row->id)->get();
+	                		if(count($po_status) > 0){
+	                		foreach($po_status as $po){
+	                		$qid = $po['approval_quotation_id'];
+	                		if($qid == $row->id){
+	                	?>
+										<p class="btn btn-dark disabled">PO Sent</p>
+	                	<?php
+	                		} else{
+	                	?>		
+	                	<a class="btn btn-success" href="{{ route('approvalQuotation_item',$row->id) }}"><i class="fa fa-mail-forward"></i> Send PO</a>
+										<?php 
+	                		} } } else{
+	                	?>
+	                  <a class="btn btn-success" href="{{ route('approvalQuotation_item',$row->id) }}"><i class="fa fa-mail-forward"></i> Send PO</a>
+	                  <?php } ?>
 	                </td>
 	              </tr>
 	              @endforeach

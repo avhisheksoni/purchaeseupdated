@@ -38,7 +38,7 @@
 	    <div>
 	    		<b>Dear <?php echo $details['vendor_data']->name; ?>,</b><br>
 	        <p>We are glad to inform you that, your Quotation has been approved.</p> 
-	      	<p>We request you to deliver items listed in purchase order as soon as possible.</p>
+	      	<p>We request you to please accept our PO by <a href="{{ route('po_accepts',[$details['po_id'], $details['vendor_data']->id ] ) }}" target="blank">here</a> and we hope you deliver listed items in purchase order as soon as possible.</p>
 	        <p>find attachment of items listing</p>
 	        <strong>Thanks & Regards</strong><br>
 	        <strong>Laxyo Energy Group</strong>

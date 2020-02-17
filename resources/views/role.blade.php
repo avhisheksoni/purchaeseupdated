@@ -29,7 +29,7 @@
               @foreach ($role as $row)
               <tr>
                 <td>{{ ++$i }}</td>
-                <td>{{ $row->slug }}</td>
+                <td>{{ $row->display_name }}</td>
                 <td>
                   <a class="btn btn-primary" data-toggle="modal" data-id="{{ $row->id }}" data-target="#myModal{{ $row->id }}" style="color: #fff">Edit</a>
 
@@ -92,7 +92,7 @@
             <div class="row">
               <div class="form-group col-md-12">
                 <label>Name</label>
-                <input type="text" class="form-control" value="{{ $row->slug }}" id="name" name="name">
+                <input type="text" class="form-control" value="{{ $row->display_name }}" id="name" name="name">
                 <input type="hidden" class="form-control" value="{{ $row->id }}" id="id" name="id">
               </div>
             </div>

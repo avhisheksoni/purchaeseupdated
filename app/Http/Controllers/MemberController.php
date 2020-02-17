@@ -70,7 +70,8 @@ class MemberController extends Controller
 	            'password' => Hash::make($request->password)
 	        ];
 	        $user = User::create($userTable);
-	        $user->assignRole($request->input('role_id'));
+	        //$user->assignRole($request->input('role_id'));
+	        $user->attachRole($request->input('role_id'));
 	        $LastInsertId = $user->id;
 	        if(!empty($LastInsertId)){
 			        $MemberTable = [
@@ -152,8 +153,8 @@ class MemberController extends Controller
 	  			//print_r($userTable); die;
 	  			$user = User::find($request->user_id);
 	        $user->update($userTable);
-	  			DB::table('model_has_roles')->where('model_id',$request->user_id)->delete();
-	  			$user->assignRole($request->input('role_id'));
+	  			DB::table('role_user')->where('user_id',$request->user_id)->delete();
+	  			$user->attachRole($request->input('role_id'));
 	        $member->update($request->all());
 	        
 	        return 'success';

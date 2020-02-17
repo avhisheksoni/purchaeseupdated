@@ -38,7 +38,7 @@
                 <td>{{ $row->last_name }}</td>
                 <td>{{ $row->email }}</td>
                 <td>{{ $row->phone }}</td>
-                <td><center><span style="background:#018401; color:#fff; border-radius:8px; padding: 0px 12px;">{{ $row->assign_role->slug }}</span></center></td>
+                <td><center><span style="background:#018401; color:#fff; border-radius:8px; padding: 0px 12px;">{{ $row->assign_role->display_name }}</span></center></td>
                 <td>
                 	<center><span style="{{ ($row->status == 0)?'color:#ff9a00':'color:#ff0000' }}; font-weight: bold">{{ ($row->status == 0)?'Active':'Unactive' }}</span></center>
                 </td>

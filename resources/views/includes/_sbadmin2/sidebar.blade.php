@@ -29,19 +29,7 @@
 
   <!-- Nav Item - Pages Collapse Menu -->
 	
-	@hasrole(2)
-  {{-- <li class="nav-item">
-    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapse0" aria-expanded="true" aria-controls="collapse0">
-      <i class="fas fa-fw fa-lock"></i>
-      <span>Roles & Permissions</span>
-    </a>
-    <div id="collapse0" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
-      <div class="bg-white py-2 collapse-inner rounded">
-        <a class="collapse-item" href="{{ '/role' }}">Assign Role</a>
-        <a class="collapse-item" href="{{ route('/permission') }}">Assign Permission</a>
-      </div>
-    </div>
-  </li> --}}
+	@role("level_2")
 	<li class="nav-item">
     <a class="nav-link" href="{{ '/role' }}">
       <i class="fa fa-lock" aria-hidden="true"></i>
@@ -129,7 +117,7 @@
   <!-- Divider -->
 	@endrole
 	
-	@hasrole(1)
+	@role("level_1")
 	<li class="nav-item">
     <a class="nav-link" href="{{ route('manager_approval') }}">
       <i class="fas fa-fw fa-chart-area"></i>
@@ -142,7 +130,7 @@
   </li>
 	@endrole
 
-	@hasrole(3)
+	@role("purchase_manager")
 	<li class="nav-item">
     <a class="nav-link" href="{{ route('user_request') }}">
       <i class="fas fa-fw fa-chart-area"></i>
@@ -175,7 +163,7 @@
   </li>
   @endrole
 
-  @hasrole(4)
+  @role(4)
   <li class="nav-item">
     <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
       <i class="fas fa-fw fa-cog"></i>
@@ -190,7 +178,7 @@
   </li>
   @endrole
 
-	@hasrole(5)
+	@role("users")
 	<li class="nav-item">
     <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
       <i class="fas fa-fw fa-cog"></i>
@@ -202,6 +190,20 @@
         <a class="collapse-item" href="{{ route('request_for_item.index') }}">RFI Listing</a>
       </div>
     </div>
+  </li>
+	@endrole
+	
+	@role("store_manager")
+	<li class="nav-item">
+    <a class="nav-link" href="{{ route('store_management.index') }}">
+      <i class="fas fa-fw fa-chart-area"></i>
+      <span>PO Received</span></a>
+  </li>
+
+  <li class="nav-item">
+    <a class="nav-link" href="{{ route('view_grn') }}">
+      <i class="fas fa-fw fa-chart-area"></i>
+      <span>Generate GRN</span></a>
   </li>
 	@endrole
 
