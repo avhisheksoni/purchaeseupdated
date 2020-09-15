@@ -2,9 +2,9 @@
 <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
   <!-- Sidebar - Brand -->
-  <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{'/home'}}">
-    <div class="sidebar-brand-icon rotate-n-15">
-      <i class="fas fa-laugh-wink"></i>
+  <a class="sidebar-brand d-flex align-items-center justify-content-center" href="http://laxyo.org/">
+    <div class="sidebar-brand-icon rotate-n-15" style="transform: rotate(3deg)">
+      <img class="img-profile rounded-circle" src="http://www.laxyo.com/images/favicon.png" style="width: 40px; ">
     </div>
     <div class="sidebar-brand-text mx-3">Laxyo <sup>ERP</sup></div>
   </a>
@@ -29,18 +29,18 @@
 
   <!-- Nav Item - Pages Collapse Menu -->
 	
-	@role("level_2")
-	<li class="nav-item">
-    <a class="nav-link" href="{{ '/role' }}">
-      <i class="fa fa-lock" aria-hidden="true"></i>
-      <span>Assign Role</span></a>
-  </li>
-
-  <li class="nav-item">
-    <a class="nav-link" href="{{ '/members' }}">
-      <i class="fa fa-plus" aria-hidden="true"></i>
-      <span>Members</span></a>
-  </li>
+	@role("purchase_superadmin")
+	<!-- <li class="nav-item">
+	    <a class="nav-link" href="{{ '/role' }}">
+	      <i class="fa fa-lock" aria-hidden="true"></i>
+	      <span>Assign Role</span></a>
+	  </li>
+	
+	  <li class="nav-item">
+	    <a class="nav-link" href="{{ '/members' }}">
+	      <i class="fa fa-plus" aria-hidden="true"></i>
+	      <span>Members</span></a>
+	  </li> -->
 
   <li class="nav-item">
     <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapse1" aria-expanded="true" aria-controls="collapse1">
@@ -69,6 +69,12 @@
   </li>
 
 	<li class="nav-item">
+    <a class="nav-link" href="{{ route('store_item.index') }}">
+      <i class="fas fa-fw fa-chart-area"></i>
+      <span>Warehouse Items</span></a>
+  </li>
+
+  <li class="nav-item">
     <a class="nav-link" href="{{ route('items_approval') }}">
       <i class="fas fa-fw fa-chart-area"></i>
       <span>Request for Items</span></a>
@@ -80,7 +86,7 @@
       <span>Received Quotation</span></a>
   </li>
 
-	{{-- <li class="nav-item">
+	<!-- <li class="nav-item">
     <a class="nav-link" href="{{ route('purchase.index') }}">
       <i class="fas fa-fw fa-chart-area"></i>
       <span>Purchase</span></a>
@@ -90,7 +96,7 @@
     <a class="nav-link" href="{{ '/item_purchase_history' }}">
       <i class="fa fa-history" aria-hidden="true"></i>
       <span>Purchase History</span></a>
-  </li> --}}
+  </li> -->
 
   <!-- Divider -->
   <hr class="sidebar-divider">
@@ -107,7 +113,7 @@
         <a class="collapse-item" href="{{ '/um' }}">Units of Measurement</a>
         <a class="collapse-item" href="{{ '/category' }}">Items Category</a>
         <a class="collapse-item" href="{{ '/subcategory' }}">Items Subcategory</a>
-        <!-- <a class="collapse-item" href="{{ '/location' }}">Location</a> -->
+        <a class="collapse-item" href="{{ '/warehouse' }}">Warehouses</a>
         <a class="collapse-item" href="{{ '/gst_state_code' }}">GST States</a>
         <a class="collapse-item" href="{{ '/department' }}">Department</a>
       </div>
@@ -117,7 +123,7 @@
   <!-- Divider -->
 	@endrole
 	
-	@role("level_1")
+	@role("purchase_admin")
 	<li class="nav-item">
     <a class="nav-link" href="{{ route('manager_approval') }}">
       <i class="fas fa-fw fa-chart-area"></i>
@@ -127,6 +133,11 @@
     <a class="nav-link" href="{{ route('quotation_received_levelone') }}">
       <i class="fas fa-fw fa-chart-area"></i>
       <span>Received Quotation</span></a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="{{ route('store_item.index') }}">
+      <i class="fas fa-fw fa-chart-area"></i>
+      <span>Warehouse Items</span></a>
   </li>
 	@endrole
 
@@ -138,6 +149,12 @@
   </li>
 
   <li class="nav-item">
+    <a class="nav-link" href="{{ route('manager_request') }}">
+      <i class="fas fa-fw fa-chart-area"></i>
+      <span>Request For Item</span></a>
+  </li>
+
+  <!-- <li class="nav-item">
     <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
       <i class="fas fa-fw fa-cog"></i>
       <span>Request For Item</span>
@@ -148,7 +165,13 @@
         <a class="collapse-item" href="{{ route('request_for_item.index') }}">RFI Listing</a>
       </div>
     </div>
+  </li> -->
+  <li class="nav-item">
+    <a class="nav-link" href="{{ route('store_item.index') }}">
+      <i class="fas fa-fw fa-chart-area"></i>
+      <span>Warehouse Items</span></a>
   </li>
+
 
 	<li class="nav-item">
     <a class="nav-link" href="{{ route('rfq.index') }}">
@@ -163,7 +186,7 @@
   </li>
   @endrole
 
-  @role(4)
+  {{-- @role(4)
   <li class="nav-item">
     <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
       <i class="fas fa-fw fa-cog"></i>
@@ -176,9 +199,9 @@
       </div>
     </div>
   </li>
-  @endrole
+  @endrole --}}
 
-	@role("users")
+	@role("purchase_user")
 	<li class="nav-item">
     <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
       <i class="fas fa-fw fa-cog"></i>
@@ -193,7 +216,14 @@
   </li>
 	@endrole
 	
-	@role("store_manager")
+	@role("store_admin")
+  <li class="nav-item">
+    <a class="nav-link" href="{{ route('store_item.index') }}">
+      <i class="fas fa-fw fa-shopping-cart"></i>
+      <span>Items</span>
+    </a>
+  </li>
+  
 	<li class="nav-item">
     <a class="nav-link" href="{{ route('store_management.index') }}">
       <i class="fas fa-fw fa-chart-area"></i>
@@ -206,6 +236,27 @@
       <span>Generate GRN</span></a>
   </li>
 	@endrole
+
+  <!-- @role("ratlam_warehouse"||"indore_warehouse")
+  <li class="nav-item">
+    <a class="nav-link" href="{{ route('store_item.index') }}">
+      <i class="fas fa-fw fa-shopping-cart"></i>
+      <span>Items</span>
+    </a>
+  </li>
+
+  <li class="nav-item">
+    <a class="nav-link" href="{{ route('store_management.index') }}">
+      <i class="fas fa-fw fa-chart-area"></i>
+      <span>PO Received</span></a>
+  </li>
+
+  <li class="nav-item">
+    <a class="nav-link" href="{{ route('view_grn') }}">
+      <i class="fas fa-fw fa-chart-area"></i>
+      <span>Generate GRN</span></a>
+  </li>
+  @endrole -->
 
   <hr class="sidebar-divider d-none d-md-block">
 

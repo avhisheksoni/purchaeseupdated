@@ -20,8 +20,7 @@
           <thead>
             <tr>
               <th>No</th>
-	            <th>First Name</th>
-	            <th>Last Name</th>
+	            <th>Employee Name</th>
 	            <th>Email</th>
 	            <th>Phone No.</th>
 	            <th>Role</th>
@@ -34,11 +33,10 @@
               @foreach ($member as $row)
               <tr>
                 <td>{{ ++$i }}</td>
-                <td>{{ $row->first_name }}</td>
-                <td>{{ $row->last_name }}</td>
+                <td>{{ $row->emp_name }}</td>
                 <td>{{ $row->email }}</td>
-                <td>{{ $row->phone }}</td>
-                <td><center><span style="background:#018401; color:#fff; border-radius:8px; padding: 0px 12px;">{{ $row->assign_role->display_name }}</span></center></td>
+                <td>{{ $row->contact }}</td>
+                <td><center><span style="background:#018401; color:#fff; border-radius:8px; padding: 0px 12px;">{{-- {{ $row->assign_role->display_name }} --}}</span></center></td>
                 <td>
                 	<center><span style="{{ ($row->status == 0)?'color:#ff9a00':'color:#ff0000' }}; font-weight: bold">{{ ($row->status == 0)?'Active':'Unactive' }}</span></center>
                 </td>

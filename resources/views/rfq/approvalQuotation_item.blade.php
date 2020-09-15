@@ -12,7 +12,7 @@
 		            </div>
 		        @endif
 						<?php //dd($data); die; ?>
-            <form action="{{ route('approvalQuotation_item_send', $data[0]->vender_id) }}" method="post">
+            <form action="{{ route('approvalQuotation_item_send', $data[0]->QuotationReceived->vender_id) }}" method="post">
                 @csrf
                 <div class="row">
                 	<div class="form-group col-md-12">
@@ -22,6 +22,20 @@
                 </div>
                 <?php  
 								$table ='
+								<table width="100%" cellpadding="5" style="color:#000;background: #9cadde;border:1px solid #000">
+						      <tr class="vendorsDetail">
+						        <td width="65%">
+						         Vendor Firm : '.$data[0]->QuotationReceived->vendorsDetail->firm_name.' <br /> 
+						         Vendor Name : '.$data[0]->QuotationReceived->vendorsDetail->name.' <br />
+						         Email Address : '.$data[0]->QuotationReceived->vendorsDetail->email.' <br />
+						        </td>
+						        <td width="35%">
+						         Register No. : '.$data[0]->QuotationReceived->vendorsDetail->register_number.' <br />
+						         GST No. : '.$data[0]->QuotationReceived->vendorsDetail->gst_number.' <br />
+						         Contact No. : '.$data[0]->QuotationReceived->vendorsDetail->mobile.' <br />
+						        </td>
+						      </tr>
+						    </table>
 								<table width="100%" border="1" cellpadding="5" cellspacing="0" style="color:#000">
 								    <tr>
 								     	<td colspan="2" align="center" style="font-size:18px"><b>Purchase Order Quotation</b></td>
@@ -71,19 +85,20 @@
                 							$sum_item_actual_amount = 0;
         											$item_tax_amount = 0;
         											$totalAmount = 0;
-                							foreach($data as $rows){
-											        	$value = json_decode($rows->items);
+        											$datas = json_decode($data[0]->QuotationReceived->items);
+                							foreach($datas as $value){
 											        		$m = $m + 1;
 											        		$sum_item_actual_amount += $value->item_actual_amount;
         													$item_tax_amount += $value->item_tax1_amount;
         													$totalAmount += $value->item_total_amount;
+        													$ttl_amt = (!empty($value->item_tax1_rate)) ? $value->item_tax1_rate : 0;
 										    $table .='<tr>
 													    <td>'.$m.'</td>
 													    <td>'.$value->item_name.'</td>
 													    <td>'.$value->item_quantity.'</td>
 													    <td>Rs. '.$value->item_price.'</td>
 													    <td>Rs. '.$value->item_actual_amount.'</td>
-													    <td>'.$value->item_tax1_rate.'%</td>
+													    <td>'.$ttl_amt.'%</td>
 													    <td>Rs. '.$value->item_tax1_amount.'</td>
 													    <td>Rs. '.$value->item_total_amount.'</td>
 													  </tr>';
@@ -130,6 +145,11 @@
     </div>
 </div>
 
+<style type="text/css">
+	.vendorsDetail > td{
+			padding: 20px !important;
+	}
+</style>
 <script src="https://cdn.ckeditor.com/ckeditor5/16.0.0/classic/ckeditor.js"></script>
 <script>
     ClassicEditor

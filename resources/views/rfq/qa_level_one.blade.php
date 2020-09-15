@@ -1,25 +1,7 @@
 @extends('../layouts.sbadmin2')
 @section('content')
-
 <?php 
 	$qid = request()->segment('2');
-	$QuotationApproval = App\QuotationApprovals::where('quote_id',$qid)->where('manager_status',1)->get();
-	$count = count($QuotationApproval);
-	if($count > 0){
-		$AppVendor_id = $QuotationApproval[0]->vendor_id; //App -> approve
-		$AppManager_status = $QuotationApproval[0]->manager_status;
-		$AppQuote_id = $QuotationApproval[0]->quote_id;
-		$AppId = $QuotationApproval[0]->id;
-		$AppLevel1 = $QuotationApproval[0]->level1_status;
-		$AppLevel2 = $QuotationApproval[0]->level2_status;
-	}else{
-		$AppVendor_id = '';
-		$AppManager_status = '';
-		$AppQuote_id = '';
-		$AppId = '';
-		$AppLevel1 = '';
-		$AppLevel2 = '';
-	}
 ?>
 <div class="container-fluid">
 		<a href="{{ '/rfq' }}" class="main-title-w3layouts mb-2 float-right"><i class="fa fa-arrow-left"></i>  Back</a>
@@ -47,20 +29,21 @@
 
 				    <?php 
 				  		foreach ($vendor as $key) {	
-				  			$row = $key[0];
+				  			$row = $key;
+				  			$vids = $row->QuotationReceived->vendorsDetail->id;
 				  	?>
-				  		<div class="row box pt-3">
+				  		<div class="row box pt-3" style="@if($row->level2_status==1 && $vids==$row->vendor_id) background: #0d8c46 @endif">
 						  	<div class="col-md-12">
 						  			<div class="col-md-3 float-left leftdiv">
-						  				<div class="text-center" style="color: black">
-						  						<h3>{{ $row->firm_name }}</h3>
-						  						<p>{{ $row->name }}</p>
-						  						<span class="span1" style="float: left">{{ $data[0]->quotion_id }}</span>
-						  						<span class="span2" style="float: right">{{ $row->register_number }}</span>
+						  				<div class="text-center" style="@if($row->level2_status==1 && $vids==$row->vendor_id) color: #fff @else color: black @endif">
+						  						<h3>{{ $row->QuotationReceived->vendorsDetail->firm_name }}</h3>
+						  						<p>{{ $row->QuotationReceived->vendorsDetail->name }}</p>
+						  						<span class="span1" style="float: left">{{ $row->QuotationReceived->quotion_id }}</span>
+						  						<span class="span2" style="float: right">{{ $row->QuotationReceived->vendorsDetail->register_number }}</span>
 						  				</div>
 						  			</div>
 						  			<div class="col-md-7 float-left div-center">
-						  				<table class="table" style="color: black">
+						  				<table class="@if($row->level2_status==1 && $vids==$row->vendor_id) table table-borderless @else table @endif" style="@if($row->level2_status==1 && $vids==$row->vendor_id) color: #fff; @else color: black @endif">
 											  <thead>
 											    <tr>
 											      <th scope="col">#</th>
@@ -75,10 +58,11 @@
 											  	<?php 
 											  		$n = 1;
 											  		$total = 0;
-											  		foreach($data as $datas){
-											  			$vid = $datas->vender_id; 
-											  			if($vid == $row->id){
-												  			$val = json_decode($datas->items);
+											  		$data = json_decode($row->QuotationReceived->items);
+											  		foreach($data as $val){
+											  			//dd($datas);
+											  			$vid = $row->QuotationReceived->vender_id; 
+											  			if($vid == $row->QuotationReceived->vendorsDetail->id){
 												  			if($n > 0){
 											  	?>
 											    <tr>
@@ -86,7 +70,7 @@
 											      <td>{{ $val->item_name }}</td>
 											      <td>{{ $val->item_quantity }} x {{ $val->item_price }}</td>
 											      <td>Rs. {{ $val->item_actual_amount }}</td>
-											      <td>{{ $val->item_tax1_rate }}%</td>
+											      <td>{{ (!empty($val->item_tax1_rate)) ? $val->item_tax1_rate: 0 }}%</td>
 											      <td>Rs. {{ $val->item_total_amount }} <?php $total +=$val->item_total_amount; ?></td>
 											    </tr>
 											    <?php } $n++; } } ?>
@@ -94,27 +78,35 @@
 											</table>
 						  			</div>
 						  			<div class="col-md-2 div-right ttlamt">
-						  				<div class="text-center mt-5" style="color: black">
+						  				<div class="text-center mt-5" style="@if($row->level2_status==1 && $vids==$row->vendor_id) color: #fff @else color: black @endif">
 						  						<h3>Total</h3>
 						  						<span>Rs. {{$total}}</span>
 						  				</div>
 						  			</div>
 						  	</div>
+						  	<div class="col-md-12">
+						  			<div class="div-border">
+						  				<div class="container-fluid mt-2 mb-2" style="@if($row->level2_status==1 && $vids==$row->vendor_id) color: #fff; @else color: black @endif">
+						  					<h5>Terms and Conditions: </h5>
+												<?php echo (!empty($row->QuotationReceived->terms))?$row->QuotationReceived->terms:'No terms and conditions available'; ?>
+											</div>
+						  			</div>
+						  	</div>
 						  	<div class="col-md-12 mb-3">
 						  			<div class="div-border">
-						  				<form id="addForm{{ $row->id }}">
+						  				<form id="addForm{{ $vids }}">
 						  					@csrf
-						  					<table class="table table-bordered" style="color: black; margin-bottom: 0; border:1px solid #000">
-						  							<tr>
+						  					<table class="table table-bordered" style="@if($row->level2_status==1 && $vids==$row->vendor_id) color: #fff; @else color: black; margin-bottom: 0; border:1px solid #000 @endif">
+						  							<tr id="managerStatusID">
 							  							<td>
-							  								Manager : @if($AppManager_status == 1 && $AppVendor_id == $row->id) <span style=" color:green ; font-weight: bold">Approved</span> @else ------- @endif
+							  								Manager : @if($row->manager_status == 1 && $row->vendor_id == $vids) <span style=" color:#38fd38; font-weight: bold">Approved</span> @else ------- @endif
 							  							</td>
 							  							<td>
 							  								Level 1 : 
-							  								@if($AppManager_status == 1 && $AppVendor_id == $row->id)
-							  									@if($AppLevel1 == 1) 
-							  										<span style=" color:green ; font-weight: bold">Approved</span> 
-							  									@elseif($AppLevel1 == 2)
+							  								@if($row->manager_status == 1 && $row->vendor_id == $vids)
+							  									@if($row->level1_status == 1) 
+							  										<span style=" color:#38fd38; font-weight: bold">Approved</span> 
+							  									@elseif($row->level1_status == 2)
 							  										<span style=" color:#ff9a00; font-weight: bold">Discard</span>
 							  									@else
 									  								<span style="margin-left: 20px;">
@@ -125,16 +117,16 @@
 									  									<input type="radio" id="
 									  									status" name="level1_status" value="2"> Discard
 									  								</span>
-									  								<input type="hidden" name="ApprovalId" value="{{ $AppId }}">
+									  								<input type="hidden" name="ApprovalId" value="{{ $row->id }}">
 									  							@endif
 							  								@endif
 							  							</td>
 							  							<td>
 							  								Level 2 : 
-							  								@if($AppManager_status == 1 && $AppVendor_id == $row->id)
-							  									@if($AppLevel2 == 1) 
+							  								@if($row->manager_status == 1 && $row->vendor_id == $vids)
+							  									@if($row->level2_status == 1) 
 							  										<span style=" color:green; font-weight: bold">Approved</span> 
-							  									@elseif($AppLevel2 == 2)
+							  									@elseif($row->level2_status == 2)
 							  										<span style=" color:#ff9a00; font-weight: bold">Discard</span>
 							  									@else
 																		------
@@ -218,11 +210,22 @@
 </style>
 <?php
 	foreach ($vendor as $keys) {
-		$rows = $keys[0];
+		$rows = $keys;
+		$rfi_id = $row->rfi_id;
+		if($rfi_id == $qid && $row->level1_status == 1 ){
+?>
+	<style> 
+		#managerStatusID{
+			pointer-events:none !important;
+      background-color:grey !important;
+		}
+	</style>
+<?php
+		}
 ?>
 <script>
 $(document).ready(function() {
-  $("#addForm"+{{ $rows->id }}).on('click', function(e) {
+  $("#addForm"+{{ $rows->QuotationReceived->vendorsDetail->id }}).on('click', function(e) {
  		var status = $('input[name="level1_status"]:checked').val();
  		if(status == 1){
  				var msg = "are you sure you wants to approve this Vendor Quotation";
@@ -235,7 +238,7 @@ $(document).ready(function() {
 	 		$.ajax({
 	        type: 'post',
 	        url: '/QuotationApprovalL1',
-	        data: $('#addForm'+{{ $rows->id }}).serialize(),
+	        data: $('#addForm'+{{ $rows->QuotationReceived->vendorsDetail->id }}).serialize(),
 	        success: function(data) {
 	        		console.log(data);
 	          	alert("Quotation Approved");

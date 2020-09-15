@@ -13,10 +13,18 @@
                         <input type="name" class="form-control" value="{{ $item->item_number }}" readonly="">
                     </div>
                     <div class="form-group col-md-6">
+                        <label>HSN Code</label>
+                        <input type="text" class="form-control" value="{{ $item->hsn_code }}" readonly="">
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="form-group col-md-12">
                         <label>Title</label>
                         <input type="text" class="form-control" value="{{ $item->title }}" readonly="">
                     </div>
                 </div>
+
                 <div class="row">
                     <div class="form-group col-md-6">
                         <label>Category</label>
@@ -52,6 +60,11 @@
                                 <input type="text" class="form-control" value="{{ $unit->name }}" readonly="">
                             @endif
                         @endforeach
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-md-12">
+                        <label>Service Type</label> - <b>{{ ($item->service_type) ? $item->service_type : "N/A" }}</b>
                     </div>
                 </div>
                 <div class="row">

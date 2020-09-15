@@ -19,8 +19,8 @@
         <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
           <thead>
             <tr>
-              <th>S.No</th>
               <th>State Name</th>
+              <th>Code</th>
               <th>Action</th>
             </tr>
           </thead>
@@ -28,8 +28,8 @@
             @if (!empty($gst))
               @foreach ($gst as $row)
               <tr>
-                <td>{{ ++$i }}</td>
                 <td>{{ $row->state_name }}</td>
+                <td>{{ str_pad($row->id, 2, '0', STR_PAD_LEFT) }}</td>
                 <td>
                   <a class="btn btn-primary" data-toggle="modal" data-id="{{ $row->id }}" data-target="#myModal{{ $row->id }}">Edit</a>
 

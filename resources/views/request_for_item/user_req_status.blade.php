@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="container-fluid">
-    <a href="{{ '/request_for_item' }}" class="main-title-w3layouts mb-2 float-right"><i class="fa fa-arrow-left"></i>  Back</a>
+    <a href="{{ '/manager_request' }}" class="main-title-w3layouts mb-2 float-right"><i class="fa fa-arrow-left"></i>  Back</a>
     <h5 class="main-title-w3layouts mb-2">Update User RFI</h5>
     <div class="card shadow mb-4">
         <div class="card-body">
@@ -16,47 +16,44 @@
                     </ul>
                 </div>
             @endif
+            {{-- @if($reason=='') {{ dd($reason[0]->discard_reason) }} @else {{ dd('no') }} @endif --}}
 						<?php //print($requestForItem->requested_role); die; ?>
             <form action="{{ route('user_req_update',$requestForItem->id) }}" method="post">
                 @csrf
                 @method('PUT')
 								
 								<div class="row">
-                    <div class="form-group col-md-4">
+                    <div class="form-group col-md-6">
                         <label>User Name</label>
-                        <input class="form-control" value="{{ $mem_details->first_name }} {{ $mem_details->last_name }}" readonly="">
+                        <input class="form-control" value="{{ $mem_details->name }} {{ $mem_details->last_name }}" readonly="">
                     </div>
-                    <div class="form-group col-md-4">
+                    <div class="form-group col-md-6">
                         <label>Email</label>
                         <input class="form-control" value="{{ $mem_details->email }}" readonly="">
                     </div>
-                    <div class="form-group col-md-4">
-                        <label>Email</label>
-                        <input class="form-control" value="{{ $mem_details->phone }}" readonly="">
-                    </div>
                 </div>
 								<?php //print_r($requestForItem->manager_status); die; ?>
-                <p><b>Update Status</b></p>
+                <!-- <p><b>Update Status</b></p>
                 <div class="row" id="row">
                     <div class="form-group col-md-4">
                       <label class="container green">Approve
-											  <input type="checkbox" name="status" value="1" @if($requestForItem->manager_status == 1) checked @endif >
+											  <input type="radio" name="status" value="1" @if($requestForItem->manager_status == 1) checked @endif >
 											  <span class="checkmark"></span>
 											</label>
                     </div>
                     <div class="form-group col-md-4">
                       <label class="container yellow">Pending
-											  <input type="checkbox" name="status" value="0" @if($requestForItem->manager_status == 0) checked @endif >
+											  <input type="radio" name="status" value="0" @if($requestForItem->manager_status == 0) checked @endif >
 											  <span class="checkmark"></span>
 											</label>
                     </div>
                     <div class="form-group col-md-4">
                       <label class="container red">Discard
-											  <input type="checkbox" name="status" value="2" @if($requestForItem->manager_status == 2) checked @endif >
+											  <input type="radio" name="status" value="2" @if($requestForItem->manager_status == 2) checked @endif  data-toggle="modal" data-target="#myModal" id="dismissResponce">
 											  <span class="checkmark"></span>
 											</label>
                     </div>
-                </div>
+                </div> -->
                 <table id="invoice-item-table" class="table table-bordered">
 			            <tr>
 			              <th>S.No</th>
@@ -66,11 +63,22 @@
 			              <th></th>
 			            </tr>
 			            <?php 
+                    //dd($requestForItem->discardReason);
 				            $m = 0; 
 				            $data = json_decode($requestForItem);
 				            $decoded_data = json_decode($data->requested_data);
 				            foreach($decoded_data as $row){
 				            	$m = $m + 1;
+                      $reason = ($requestForItem->discardReason !=null) ? $requestForItem->discardReason->level1_discard: '';
+                      $reason1 = ($requestForItem->discardReason !=null) ? $requestForItem->discardReason->level2_discard: '';
+                      if(!empty($reason) || !empty($reason1)){
+                        echo "<script src='/themes/sb-admin2/vendor/jquery/jquery.min.js'></script>
+                        <script> 
+                            $(window).on('load',function(){
+                                $('#myModal1').modal({backdrop: 'static', keyboard: false});
+                            });
+                        </script>";
+                      }
 				            	//print_r($data->manager_status); die;
 				          ?>
 			            <tr>
@@ -81,7 +89,18 @@
 			              	<input type="text" name="item_name[]" id="item_name{{ $m }}" class="form-control input-sm" value="{{ $row->item_name }}" />
 			              </td>
 			              <td>
-			              	<input type="number" name="quantity[]" id="quantity{{ $m }}" data-srno="{{ $m }}" class="form-control input-sm quantity" value="{{ $row->quantity }}" />
+                      <div class="row">
+                        <div class="col-md-8">
+			              	    <input type="number" name="quantity[]" id="quantity{{ $m }}" data-srno="{{ $m }}" class="form-control input-sm quantity" value="{{ $row->quantity }}" />
+                        </div>
+                        <div class="col-md-4">
+                          <select name="unit[]" id="unit{{ $m }}" data-srno="{{ $m }}" class="form-control input-sm unit" >
+                              @foreach($unit as $rows)
+                                <option value="{{$rows->id}}" @if($row->unit_id == $rows->id) selected @endif >{{ $rows->name }}</option>
+                              @endforeach
+                          </select>
+                        </div>
+                      </div>
 			              </td>
 			              <td>
 			              	<textarea name="description[]" id="description{{ $m }}" data-srno="{{ $m }}" class="form-control input-sm number_only description" >{{ $row->description }}</textarea>
@@ -90,22 +109,47 @@
 			            </tr>
 			            <?php } ?>
 			          </table>
-			          @if($requestForItem->level1_status == 0 && $requestForItem->requested_role != 'Manager')
-			          <div align="right">
-			            <button type="button" name="add_row" id="add_row" class="btn btn-success btn-xs">+</button>
-			          </div>
-			          @endif
+                @permission('purchase_manager_approval') 
+  			          @if($requestForItem->level1_status == 0 && $requestForItem->requested_role != 'Manager')
+  			          <div align="right">
+  			            <button type="button" name="add_row" id="add_row" class="btn btn-success btn-xs">+</button>
+  			          </div>
+  			          @endif
+                @endpermission
 			          <input type="hidden" name="user_id" value="{{ $row->user_id }}" />
 			          <input type="hidden" name="req_user_table_id" value="{{ $requestForItem->id }}" />
-			          @if($requestForItem->level1_status == 0 && $requestForItem->requested_role != 'Manager')
+			           <!-- Modal -->
+								  <div class="modal fade" id="myModal" role="dialog">
+								    <div class="modal-dialog">
+								      <!-- Modal content-->
+								      <div class="modal-content">
+								        <div class="modal-header">
+								          <h4 class="modal-title">Discard Reason</h4>
+								          <button type="button" class="close modalCloss" data-dismiss="modal">&times;</button>
+								        </div>
+								        <div class="modal-body">
+								          <textarea name="discardReason" id="discardReason" class="form-control input-sm number_only discardReason" placeholder="Enter Reason.. Why you discard ?">@if($requestForItem->discardReason !=null) {{ $requestForItem->discardReason->discard_reason }} @endif</textarea>
+								        </div>
+								        <div class="modal-footer">
+								          <button type="button" class="btn btn-default modalCloss" data-dismiss="modal">Close</button>
+								        </div>
+								      </div>
+								    </div>
+								  </div>
+								 <!-- Modal -->
+
+                @permission('purchase_manager_approval') 
+			          @if($requestForItem->manager_status == 0 && $requestForItem->level1_status == 0 && $requestForItem->requested_role != 'Manager')
                 	<button type="submit" name="submit" class="btn btn-primary error-w3l-btn px-4">Submit</button>
                 @else
-									<button disabled="" class="btn btn-primary error-w3l-btn px-4">Submit</button>
+                  <button disabled="" class="btn btn-primary error-w3l-btn px-4">Submit</button>
                 @endif
+                @endpermission
             </form>
         </div>
     </div>
 </div>
+
 <style type="text/css">
 	/* Hide the browser's default checkbox */
 .container input {
@@ -174,6 +218,19 @@
   transform: rotate(45deg);
 }
 </style>
+
+
+<div id="myModal1" class="modal hide fade" role="dialog">
+  <div class="modal-dialog">
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-body text-center" style="color:#000">
+        <h3>Discard Reason</h3>
+        <p>@if($requestForItem->discardReason !=null) {{ $requestForItem->discardReason->level1_discard }}  {{ $requestForItem->discardReason->level2_discard }} @endif</p>
+      </div>
+    </div>
+  </div>
+</div>
 @endsection
 <script type="text/javascript" charset="utf8" src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.7.1.min.js"></script>
 <script>
@@ -208,4 +265,14 @@ $(document).ready(function(){
   });
   
 });
+</script>
+<script>
+	$(document).ready(function(){
+		$('.modalCloss').on('click', function(){
+			var val = $('#discardReason').val();
+			if(val == ''){
+				$('#dismissResponce').prop('checked', false);
+			}
+		});
+	});
 </script>

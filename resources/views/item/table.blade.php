@@ -4,11 +4,11 @@
               <th>S.No</th>
               <th>Item Number</th>
               <th>Title</th>
-              <th>Brand</th>
-              <th>Department</th>
+              <th>HSN Code</th>
               <th>Category</th>
+              <th>Subcategory</th>
+              <th>Department</th>
               <th>Unit</th>
-              <th>Description</th>
               <th>Action</th>
             </tr>
           </thead>
@@ -19,17 +19,11 @@
                 <td>{{ $row->id }}</td>
                 <td>{{ $row->item_number }}</td>
                 <td>{{ $row->title }}</td>
+                <td>{{ ($row->hsn_code) ? $row->hsn_code : 'N/A' }}</td>
+                <td>{{ $row->category->name }}</td>
                 <td>{{ $row->brand_name->name }}</td>
                 <td>{{ $row->department_name->name }}</td>
-                <td>{{ $row->category->name }}</td>
                 <td>{{ $row->unit->name }}</td>               	
-                <td>
-                  @if(strlen($row->description) >= 80)
-                    {{ substr($row->description,0,80).'..... ' }} <b>Read More</b>
-                  @else
-                    {{ $row->description }}
-                  @endif
-                </td>
                 <td>
                   <form action="{{ route('item.destroy',$row->id) }}" method="POST">
                     <a class="btn btn-success" href="{{ route('item.show',$row->id) }}" title="Show"><i class="fa fa-eye" aria-hidden="true"></i></a>

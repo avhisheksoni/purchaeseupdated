@@ -30,62 +30,64 @@
                     </div>
                 </div>
                 <?php  
-								$table ='
-								<table width="100%" border="1" cellpadding="5" cellspacing="0">
-								    <tr>
-								     	<td colspan="2" align="center" style="font-size:18px"><b>Request for Quotation</b></td>
-								    </tr>
-								    <tr>
-									    <td colspan="2">
-										    <table width="100%" cellpadding="5">
-										      <tr>
-										        <td width="65%">
-										         From,<br />
-										         <b></b><br />
-										         Name : Laxyo Energy Ltd. <br /> 
-										         Email Address : info@laxyo.com<br />
-										         Contact No. : 0731-4043798 <br />
-										        </td>
-										        <td width="35%">
-										         Register No. : 0123456789 <br />
-										         GST No. : lax1234<br />
-										         Date : '.date("d-m-Y H:i:s").'<br />
-										        </td>
-										      </tr>
-										    </table>
-										    <br />
-										    <table class="table table-hover">
-										    	<thead>
-											      <tr>
-											        <th scope="col">Sr No.</th>
-											        <th scope="col">Item Name</th>
-											        <th scope="col">Quantity</th>
-											        <th scope="col">Description</th>
-											      </tr>
-											    </thead>
-											    <tbody>';
-                							$m = 0;
-											        foreach($requested as $rows){
-											        	$value = json_decode($rows->requested_data);
-											        	foreach ($value as $row) {
-											        		$m = $m + 1;
-										    $table .='<tr>
-													    <td>'.$m.'</td>
-													    <td>'.$row->item_name.'</td>
-													    <td>'.$row->quantity.'</td>
-													    <td>'.$row->description.'</td>
-													  </tr>';
-														 } } 
-												$table .='</tbody>
-												</table>
-									   	</td>
-									  </tr>
-								</table>';
+					$table ='
+					<table width="100%" border="1" cellpadding="5" cellspacing="0">
+					    <tr>
+					     	<td colspan="2" align="center" style="font-size:18px"><b>Request for Quotation</b></td>
+					    </tr>
+					    <tr>
+						    <td colspan="2">
+							    <table width="100%" cellpadding="5">
+							      <tr>
+							        <td width="65%">
+							         From,<br />
+							         <b></b><br />
+							         Name : Laxyo Energy Ltd. <br /> 
+							         Email Address : info@laxyo.com<br />
+							         Contact No. : 0731-4043798 <br />
+							        </td>
+							        <td width="35%">
+							         Register No. : 0123456789 <br />
+							         GST No. : lax1234<br />
+							         Date : '.date("d-m-Y H:i:s").'<br />
+							        </td>
+							      </tr>
+							    </table>
+							    <br />
+							    <table class="table table-hover">
+							    	<thead>
+								      <tr>
+								        <th scope="col">Sr No.</th>
+								        <th scope="col">Item Name</th>
+								        <th scope="col">Quantity</th>
+								        <th scope="col">Description</th>
+								      </tr>
+								    </thead>
+								    <tbody>';
+    							$m = 0;
+								        foreach($requested as $rows){
+								        	$value = json_decode($rows->requested_data);
+								        	foreach ($value as $row) {
+								        		foreach ($unit as $units) {
+								        			if($units->id == $row->unit_id){
+								        			$m = $m + 1;
+							    $table .='<tr>
+										    <td>'.$m.'</td>
+										    <td>'.$row->item_name.'</td>
+										    <td>'.$row->quantity.' '.$units->name.'</td>
+										    <td>'.$row->description.'</td>
+										  </tr>';
+											} } } }
+									$table .='</tbody>
+								</table>
+						   	</td>
+						  </tr>
+					</table>';
 
-								echo $table;
-								?>
-								<textarea name="table" class="form-control" style="display: none"><?php echo $table; ?></textarea>
-						</form>
+					echo $table;
+				?>
+				<textarea name="table" class="form-control" style="display: none"><?php echo $table; ?></textarea>
+			</form>
         </div>
     </div>
 </div>

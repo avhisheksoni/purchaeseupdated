@@ -31,8 +31,7 @@
             	@foreach($request_for_items as $row)
             	<tr id="bgclr{{$row->id}}">
                 <td>{{ ++$i }}</td>
-                <td>
-                	{{-- $mem_details['first_name'] }} {{ $mem_details['last_name'] --}} Users are generated new items request</td>
+                <td>Users are generated new items request</td>
                 <td>{{ count(json_decode($row->requested_data)) }}</td>
                 <td>
 									<center>
@@ -60,10 +59,13 @@
 									</center>
                 </td>
                 <td>
-                  <a class="btn btn-primary disbtn{{$row->id}}" href="{{ route('user_req_status', $row->id) }}"><i class="fa fa-eye"></i></a>
-                  @if($row->level2_status == 1)
-                  <a class="btn btn-success disbtn{{$row->id}}" href="{{ route('applyforquotation', $row->id) }}" title="Apply for Quotation">Apply</a>
-                  @endif
+                  <!-- <a class="btn btn-primary disbtn{{$row->id}}" href="{{ route('user_req_status', $row->id) }}"><i class="fa fa-eye"></i></a> -->
+                  <a class="btn btn-primary disbtn{{$row->id}}" href="{{ route('check_rfi', $row->id) }}"><i class="fa fa-eye"></i></a>
+                  @permission('purchase_manager_approval') 
+                    @if($row->level2_status == 1)
+                    <a class="btn btn-success disbtn{{$row->id}}" href="#" title="Sent to warehouse">Sent to store</a>
+                    @endif
+                  @endpermission
                 </td>
               </tr>
               	<?php

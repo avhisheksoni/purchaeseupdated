@@ -26,10 +26,18 @@
                         <input type="text" class="form-control" value="{{ $item->item_number }}" readonly="">
                     </div>
                     <div class="form-group col-md-6">
+                        <label>HSN Code</label>
+                        <input type="text" class="form-control" name="hsn_code" value="{{ $item->hsn_code }}">
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="form-group col-md-12">
                         <label>Title</label>
                         <input type="text" class="form-control" name="title" value="{{ $item->title }}">
                     </div>
                 </div>
+
                 <div class="row">
                     <div class="form-group col-md-6">
                         <label>Select Category</label>
@@ -73,11 +81,19 @@
                 </div>
                 <div class="row">
                     <div class="form-group col-md-12">
+                        <label>Service Type</label><br>
+                        <input type="radio" name="service_type" value="Service" @if("Service" == $item->service_type) checked @endif> Service
+                        <input type="radio" name="service_type" value="Supplier" @if("Supplier" == $item->service_type) checked @endif> Supplier
+                        <input type="radio" name="service_type" value="Mixed" @if("Mixed" == $item->service_type) checked @endif> Mixed
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-md-12">
                         <label>Description</label>
                         <textarea name="description" class="form-control" rows="5">{{ $item->description }}</textarea>
                     </div>
                 </div>
-                <button type="submit" name="submit" class="btn btn-primary">Submit</button>
+                <button class="btn btn-primary">Submit</button>
             </form>
         </div>
     </div>

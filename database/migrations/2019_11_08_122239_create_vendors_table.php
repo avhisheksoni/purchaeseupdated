@@ -13,7 +13,7 @@ class CreateVendorsTable extends Migration
      */
     public function up()
     {
-        Schema::create('vendors', function (Blueprint $table) {
+        Schema::create('prch_vendors', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('name');
             $table->string('email')->nullable();
@@ -24,6 +24,7 @@ class CreateVendorsTable extends Migration
             $table->string('alt_number');
             $table->string('address');
             $table->string('item_id');
+            $table->integer('na_gst')->nullable();
             $table->timestamps();
         });
     }
@@ -35,6 +36,6 @@ class CreateVendorsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('vendors');
+        Schema::dropIfExists('prch_vendors');
     }
 }

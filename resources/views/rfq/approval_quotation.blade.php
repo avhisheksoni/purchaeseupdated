@@ -31,9 +31,14 @@
 	              @foreach($data as $row)
 	              <tr>
 	                <td>{{ ++$i }}</td>
-	                <td>{{ $row->quotion_id }}</td>
-	                <td>{{ $row->firm_name }}</td>
-	                <td>{{ count(json_decode($row->item_list)) }}</td>
+	                <td>{{ $row->QuotationReceived->quotion_id }}</td>
+	                <td>{{ $row->QuotationReceived->vendorsDetail->firm_name }}</td>
+	                <td>
+              			<?php
+			              	$json[] = json_decode($row->QuotationReceived->items);
+			              	echo count($json);
+			              ?>
+	                </td>
 	                <td>
 	                	@if($row->manager_status == 1) 
 	                		<span style=" color:green ; font-weight: bold">Approved</span>

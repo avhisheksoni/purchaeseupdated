@@ -7,9 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 class QuotationReceived extends Model
 {
     protected $guarded = [];
-    protected $table = 'quotation_receiveds';
+    protected $table = 'prch_quotation_receiveds';
 
     public function vendorsDetail(){
-    	return $this->belongsTo('App\vendor', 'vender_id');
+    	return $this->hasOne('App\vendor', 'id', 'vender_id');
     }
 }

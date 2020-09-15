@@ -19,28 +19,36 @@ class StoreManagementController extends Controller
      */
     public function index()
     {
-    		$data = DB::table('po_send_to_vendors')
-            ->join('vendors', 'po_send_to_vendors.vendor_id', '=', 'vendors.id')
-            ->orderBy('po_send_to_vendors.created_at', 'desc')
-            ->select('po_send_to_vendors.*', 'vendors.*')
-            ->where('po_send_to_vendors.po_accept_status', '=', '1')->paginate(10);
+    	$data = DB::table('prch_po_send_to_vendors')
+            ->join('prch_vendors', 'prch_po_send_to_vendors.vendor_id', '=', 'prch_vendors.id')
+            ->orderBy('prch_po_send_to_vendors.created_at', 'desc')
+            ->select('prch_po_send_to_vendors.*', 'prch_vendors.*')
+            ->where('prch_po_send_to_vendors.po_accept_status', '=', '1')->paginate(10);
+
         return view("store_management.index",compact("data"))->with('i', (request()->input('page', 1) - 1) * 10);
     }
 
     public function ViewAcceptedPO($id){
-        $approvedData = DB::table('quotation_approvals')
-            ->join('vendors', 'quotation_approvals.vendor_id', '=', 'vendors.id')
-            ->join('vendors_mail_sends', 'quotation_approvals.quote_id', '=', 'vendors_mail_sends.id')
-            ->orderBy('quotation_approvals.created_at', 'desc')
-            ->select('quotation_approvals.*', 'vendors.*', 'vendors_mail_sends.*')
-            ->where('quotation_approvals.manager_status', '=', 1)->where('quotation_approvals.level1_status', '=', 1)->where('quotation_approvals.level2_status', '=', 1)->where('quotation_approvals.quote_id', '=', $id)->paginate(10);
-        foreach ($approvedData as $key) {
-    			$quote_id = $key->quote_id;
-    			$vid = $key->vendor_id;
-    			$data = QuotationReceived::where('quotion_sends_id',$quote_id)->where('vender_id',$vid)->get();
-    			$PO_no = PO_SendToVendors::where('approval_quotation_id',$quote_id)->get();
-    		}
-    		return view("store_management.view_accepted_po", compact('data','PO_no'));
+        /*$approvedData = DB::table('prch_quotation_approvals')
+            ->join('prch_vendors', 'prch_quotation_approvals.vendor_id', '=', 'prch_vendors.id')
+            ->join('prch_vendors_mail_sends', 'prch_quotation_approvals.quote_id', '=', 'prch_vendors_mail_sends.id')
+            ->orderBy('prch_quotation_approvals.created_at', 'desc')
+            ->select('prch_quotation_approvals.*', 'prch_vendors.*', 'prch_vendors_mail_sends.*')
+            ->where('prch_quotation_approvals.manager_status', '=', 1)->where('prch_quotation_approvals.level1_status', '=', 1)->where('prch_quotation_approvals.level2_status', '=', 1)->where('prch_quotation_approvals.rfi_id', '=', $id)->get(); //paginate(10);*/
+
+        /*foreach ($approvedData as $key) {
+			$quote_id = $key->quote_id;
+            $rfi_id = $key->rfi_id;
+			$vid = $key->vendor_id;
+            //dd($approvedData);
+			$data = QuotationReceived::where('quotion_sends_id',$quote_id)->where('vender_id',$vid)->get();
+			$PO_no = PO_SendToVendors::where('approval_quotation_id',$rfi_id)->get();
+		}
+		return view("store_management.view_accepted_po", compact('data','PO_no'));*/
+
+        $data = QuotationApprovals::with('vendors_mail_items','QuotationReceived.vendorsDetail','rfi_status')
+                        ->where('rfi_id', '=', $id)->paginate(10);
+        return view("store_management.view_accepted_po", compact('data'));
     }
 
     // Fetch GRN for store manager

@@ -2,11 +2,8 @@
 
 namespace App;
 
-use Illuminate\Database\Eloquent\Model;
+use Laratrust\Models\LaratrustRole;
 
-class Role extends Model
+class Role extends LaratrustRole
 {
-    protected $fillable = [
-        'name', 'display_name', 'description'
-    ];
 }

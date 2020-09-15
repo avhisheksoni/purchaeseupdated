@@ -24,19 +24,19 @@
                 <div class="row" id="row">
                     <div class="form-group col-md-4">
                       <label class="container green">Approve
-											  <input type="checkbox" name="status" value="1" @if($requested[0]->level1_status == 1) checked @endif >
+											  <input type="radio" name="status" value="1" @if($requested[0]->level1_status == 1) checked @endif >
 											  <span class="checkmark"></span>
 											</label>
                     </div>
                     <div class="form-group col-md-4">
                       <label class="container yellow">Pending
-											  <input type="checkbox" name="status" value="0" @if($requested[0]->level1_status == 0) checked @endif >
+											  <input type="radio" name="status" value="0" @if($requested[0]->level1_status == 0) checked @endif >
 											  <span class="checkmark"></span>
 											</label>
                     </div>
                     <div class="form-group col-md-4">
                       <label class="container red">Discard
-											  <input type="checkbox" name="status" value="2" @if($requested[0]->level1_status == 2) checked @endif >
+											  <input type="radio" name="status" value="2" @if($requested[0]->level1_status == 2) checked @endif data-toggle="modal" data-target="#myModal" id="dismissResponce">
 											  <span class="checkmark"></span>
 											</label>
                     </div>
@@ -55,6 +55,7 @@
 				            	$value = json_decode($rows->requested_data);
 				            	foreach ($value as $row) {
 				            		$m = $m + 1;
+                        //dd($row);
 				          ?>
 			            <tr>
 			              <td>
@@ -64,7 +65,24 @@
 			              	<input type="text" name="item_name[]" id="item_name{{ $m }}" class="form-control input-sm" value="{{ $row->item_name }}" readonly />
 			              </td>
 			              <td>
-			              	<input type="number" name="quantity[]" id="quantity{{ $m }}" data-srno="{{ $m }}" class="form-control input-sm quantity" value="{{ $row->quantity }}" readonly />
+                      <div class="row">
+                        <div class="col-md-8">
+			              	    <input type="number" name="quantity[]" id="quantity{{ $m }}" data-srno="{{ $m }}" class="form-control input-sm quantity" value="{{ $row->quantity }}" readonly />
+                        </div>
+                        <div class="col-md-4">
+                          <?php 
+                            foreach($unit as $rows){
+                              $uid = $row->unit_id;
+                              $unit_id = $rows->id;
+                              if($uid == $unit_id){
+                          ?>
+                            <input type="text" name="unit[]" id="unit{{ $m }}" class="form-control input-sm" value="{{ $rows->name }}" readonly />
+                          <?php
+                              }
+                            }
+                          ?>
+                        </div>
+                      </div>
 			              </td>
 			              <td>
 			              	<textarea name="description[]" id="description{{ $m }}" data-srno="{{ $m }}" class="form-control input-sm number_only description" readonly >{{ $row->description }}</textarea>
@@ -75,6 +93,25 @@
 			          </table>
 			          <input type="hidden" name="user_id" value="{{ $row->user_id }}" />
 			          <input type="hidden" name="req_user_table_id" value="{{ $requested[0]->id }}" />
+                <!-- Modal -->
+                  <div class="modal fade" id="myModal" role="dialog">
+                    <div class="modal-dialog">
+                      <!-- Modal content-->
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <h4 class="modal-title">Discard Reason</h4>
+                          <button type="button" class="close modalCloss" data-dismiss="modal">&times;</button>
+                        </div>
+                        <div class="modal-body">
+                          <textarea name="discardReason" id="discardReason" class="form-control input-sm number_only discardReason" placeholder="Enter Reason.. Why you discard ?">@if($rows->discardReason != null) {{ $rows->discardReason->level1_discard }} @endif</textarea>
+                        </div>
+                        <div class="modal-footer">
+                          <button type="button" class="btn btn-default modalCloss" data-dismiss="modal">Close</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                <!-- Modal -->
                 <button type="submit" name="submit" class="btn btn-primary error-w3l-btn px-4">Submit</button>
             </form>
         </div>
@@ -182,4 +219,14 @@ $(document).ready(function(){
   });
   
 });
+</script>
+<script>
+  $(document).ready(function(){
+    $('.modalCloss').on('click', function(){
+      var val = $('#discardReason').val();
+      if(val == ''){
+        $('#dismissResponce').prop('checked', false);
+      }
+    });
+  });
 </script>

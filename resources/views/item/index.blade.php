@@ -38,6 +38,7 @@
 	            <button type="submit" name="submit" id="addUnit" class="btn btn-primary">Filter</button>
 	            <button type="button" name="reset" id="reset" class="btn btn-dark">Reset</button>
 	            <a class="float-right" href="{{ route('export_pdf') }}" title="PDF Download"><i class="fa fa-file-pdf-o" aria-hidden="true" style="font-size: 22px"></i></a>
+	            <a class="float-right" href="{{ route('excel_export') }}" title="Excel Download"><i class="fa fa-file-excel-o" aria-hidden="true" style="font-size: 22px; margin-right: 12px"></i></a>	           
 	          </div>
 	        </div>
         </form>

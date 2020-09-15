@@ -19,22 +19,26 @@
               <th>S.No</th>
               <th>P.O. ID</th>
               <th>Vendor's Firm Name</th>
+              <th>Vendor's Name</th>
+              <th>Vendor's Mob No.</th>
               <th>Action</th>
             </tr>
           </thead>
           <tbody>
-          		@if (!empty($data))
-	              @foreach($data as $row)
-	              <tr>
-	                <td>{{ ++$i }}</td>
-	                <td>{{ $row->po_id }}</td>
-	                <td>{{ $row->firm_name }}</td>
-	                <td>
-	                	<a class="btn btn-success" href="{{ route("view_accepted_po",$row->approval_quotation_id) }}"><i class="fa fa-mail-forward"></i> Send PO</a>
-	                </td>
-	              </tr>
-	              @endforeach
-	            @endif
+              @if (!empty($data))
+                @foreach($data as $row)
+                <tr>
+                  <td>{{ ++$i }}</td>
+                  <td>{{ $row->po_id }}</td>
+                  <td>{{ $row->firm_name }}</td>
+                  <td>{{ $row->name }}</td>
+                  <td>{{ $row->mobile }}</td>
+                  <td>
+                    <a class="btn btn-success" href="{{ route("view_accepted_po",$row->approval_quotation_id) }}"> View Items </a>
+                  </td>
+                </tr>
+                @endforeach
+              @endif
           </tbody>
         </table>
       </div>

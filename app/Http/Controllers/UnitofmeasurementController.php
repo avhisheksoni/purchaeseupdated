@@ -21,7 +21,7 @@ class UnitofmeasurementController extends Controller
      */
     public function index()
     {
-        $um = Unitofmeasurement::latest()->paginate(10);
+        $um = unitofmeasurement::latest()->paginate(10);
         return view('um',compact('um'))->with('i', (request()->input('page', 1) - 1) * 10);
     }
 
@@ -44,7 +44,7 @@ class UnitofmeasurementController extends Controller
     public function store(Request $request)
     {
         $validation = Validator::make($request->all(), [
-            'name' => 'unique:unitofmeasurements',
+            'name' => 'unique:prch_unitofmeasurements',
             'description' => ''
         ]);
         if ($validation->fails())

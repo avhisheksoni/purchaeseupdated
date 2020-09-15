@@ -6,5 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class Department extends Model
 {
-    //
+    protected $guarded = [];
+    protected $table = 'prch_departments';
 }

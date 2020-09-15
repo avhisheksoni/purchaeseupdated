@@ -13,19 +13,30 @@ use Session;
 
 class LoginController extends Controller
 {
-	public function login($username){
-		$data = User::where('email',$username)->first();
-        if (Auth::attempt(['email' => $username, 'password' =>$data->other_pass])) {
-	       $user = Auth::user();
-	      return redirect()->route('home');
-	    }else {
-	       return response()->json(['error' => 'Unauthorised'], 401);
-	    }
-    }
+	public function login($username,$pass){
+		$data = User::where('email',$username)->first();	
+		if($username !='' && $pass !=''){
+			//dd($data);	
+			if($data->log_status == true && $data->enc_password == $pass){
+	      if (Auth::attempt(['email' => $username, 'password' =>$data->other_pass])) {
+		       $user = Auth::user();
+		      return redirect()->route('home');
+		    }else {
+		       return response()->json(['error' => 'Unauthorised'], 401);
+		    }
+		  }
+		  else{
+		  	return redirect('http://laxyo.org/login');
+		  }
+		}
+		else{
+			return response()->json(['error' => 'Unauthorised'], 401);
+		}
+
+  }
 
     public function logout(Request $request){
-    	$guard =null;
-    	// Auth::guard($guard)->logout();
+    	Auth::logout();
     	Session::flush();
   		return redirect('http://laxyo.org/login');
     }

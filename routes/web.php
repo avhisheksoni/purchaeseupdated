@@ -11,10 +11,10 @@
 |
 */
 
-Route::get('/', function () {
-    return Auth::check() ? view('/home') :  view('auth.login');
-});
-Route::get('/login/{username}','LoginController@login');
+Route::get('/', 'HomeController@check')->name('login');
+
+Route::get('/login/{username}/{pass}','LoginController@login');
+Route::post('/logout','LoginController@logout')->name('logout');
 // Auth::routes(['register' => false]);
 
 //Auth::routes();
@@ -36,7 +36,7 @@ Route::post('import', 'QuotationController@import')->name('import');*/
 
 
 // access for roles
-Route::group(['middleware' => ['role:level_1']], function () {
+Route::group(['middleware' => ['role:purchase_admin']], function () {
     Route::get('manager_approval', 'LevelOne@ManagerApproval')->name('manager_approval');
     Route::get('edit_levelone_approval/{id}', 'LevelOne@LevelOneApproval')->name('edit_levelone_approval');
     Route::put('update_levelone_approval/{id}', 'LevelOne@UpdateLevelOneApproval')->name('update_levelone_approval');
@@ -46,11 +46,12 @@ Route::group(['middleware' => ['role:level_1']], function () {
     Route::post('QuotationApprovalL1', 'QuotationReceivedController@QuotationApprovalByL1')->name('QuotationApprovalL1');
 });
 
-Route::group(['middleware' => ['role:level_2']], function() {
+Route::group(['middleware' => ['role:purchase_superadmin']], function() {
     Route::resource('vendor', 'VendorController');
 		Route::resource('/um', 'UnitofmeasurementController');
 		Route::resource('/role', 'RoleController');
 		Route::resource('/category', 'ItemCategoryController');
+		Route::resource('/warehouse', 'WarehouseController');
 		Route::resource('/gst_state_code', 'GSTStateCodeController');
 		Route::resource('/members', 'MemberController');
 		Route::resource('/location', 'LocationController');
@@ -58,6 +59,9 @@ Route::group(['middleware' => ['role:level_2']], function() {
 		Route::resource('purchase', 'PurchaseController');
 		Route::POST('filter', 'ItemController@filter')->name('filter');
 		Route::get('export_pdf', 'ItemController@export_pdf')->name('export_pdf');
+		Route::POST('excel_import', 'ItemController@excelImportItems')->name('excel_import');
+		Route::get('excel_export', 'ItemController@excelItemsExport')->name('excel_export');
+		Route::get('download_sheet', 'ItemController@downloadSheetFormat')->name('download_sheet');
 		Route::resource('/department', 'DepartmentController');
 		Route::resource('/subcategory', 'BrandController');
 		Route::post('/purchase/fetch', 'PurchaseController@fetch')->name('fetch');
@@ -85,11 +89,12 @@ Route::group(['middleware' => ['role:purchase_manager']], function () {
 		//
 });
 
-Route::group(['middleware' => ['role:assistant_manager|users|purchase_manager']], function () {
+Route::group(['middleware' => ['role:purchase_user|purchase_manager']], function () {
 	Route::resource('request_for_item', 'RequestForItemController');
+	Route::post('/request_for_item/fetch', 'RequestForItemController@fetch')->name('fetch');
 });
 
-Route::group(['middleware' => ['role:assistant_manager|purchase_manager']], function () {
+Route::group(['middleware' => ['role:purchase_manager']], function () {
     Route::resource('rfq', 'QuotationReceivedController');
     Route::get('user_request', 'RequestForItemController@UsersRequest')->name('user_request');
     Route::get('user_req_status/{id}', 'RequestForItemController@UsersRequestStatus')->name('user_req_status');
@@ -101,17 +106,24 @@ Route::group(['middleware' => ['role:assistant_manager|purchase_manager']], func
     Route::get('approval_quotation', 'QuotationReceivedController@ApprovalQuotation')->name('approval_quotation');
     Route::get('approvalQuotation_item/{id}', 'QuotationReceivedController@ApprovalQuotationItems')->name('approvalQuotation_item');
     Route::post('approvalQuotation_item_send/{id}', 'QuotationReceivedController@ApprovalQuotationItemSend')->name('approvalQuotation_item_send');
+
+
+
+    Route::get('manager_request', 'RequestForItemController@ManagerRequest')->name('manager_request');
+    Route::get('check_users_rfi/{id}', 'RequestForItemController@CheckUsersRFI')->name('check_rfi');
+    Route::post('/request_for_item/set_warehouse', 'RequestForItemController@SetWareHouse')->name('set_warehouse');
 });
 
-Route::group(['middleware' => ['role:users']], function () {
-	//
+Route::group(['middleware' => ['role:store_admin|purchase_manager|purchase_superadmin|purchase_admin']], function () {
+	Route::resource('store_item', 'store_inventory\StoreItemController');
+	Route::post('update_qty', 'store_inventory\StoreItemController@update_qty')->name("update_qty");
 });
 
-Route::group(['middleware' => ['role:store_manager']], function () {
-		Route::resource('store_management', 'StoreManagementController');
-		Route::get('view_accepted_po/{id}', 'StoreManagementController@ViewAcceptedPO')->name("view_accepted_po");
-		Route::get('view_grn', 'StoreManagementController@FetchAllGRN')->name("view_grn");
-		Route::get('add_grn', 'StoreManagementController@AddGRN')->name("add_grn");
+Route::group(['middleware' => ['role:store_admin']], function () {
+	Route::resource('store_management', 'StoreManagementController');
+	Route::get('view_accepted_po/{id}', 'StoreManagementController@ViewAcceptedPO')->name("view_accepted_po");
+	Route::get('view_grn', 'StoreManagementController@FetchAllGRN')->name("view_grn");
+	Route::get('add_grn', 'StoreManagementController@AddGRN')->name("add_grn");
 });
 
 

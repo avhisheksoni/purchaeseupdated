@@ -12,7 +12,12 @@ use Helper;
 use PDF;
 use PDFs;
 use DB;
+use Excel;
 use Illuminate\Http\Request;
+use App\Imports\ItemsImport;
+use App\Exports\ItemsExcelExport;
+use File;
+use Response;
 
 class ItemController extends Controller
 {
@@ -59,16 +64,17 @@ class ItemController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'title' => 'required|unique:items',
+            'title' => 'required|unique:prch_items',
             'brand' => 'required',
             'department' => 'required',
             'unit_id' => 'required',
             'category_id' => 'required',
+            'hsn_code' => 'required',
         ]);
 
-  			$ids = DB::select(DB::raw("SELECT nextval('items_id_seq')"));
-  			$id = $ids[0]->nextval+1;
-  			//$id = Helper::getAutoIncrementId();
+		$ids = DB::select(DB::raw("SELECT nextval('prch_items_id_seq')"));
+		$id = $ids[0]->nextval+1;
+		//$id = Helper::getAutoIncrementId();
         $cat = str_pad($request->category_id, 2, '0', STR_PAD_LEFT);
         $unit = str_pad($request->unit_id, 2, '0', STR_PAD_LEFT);
         $item = str_pad($id, 4, '0', STR_PAD_LEFT);
@@ -125,13 +131,14 @@ class ItemController extends Controller
      */
     public function update(Request $request, item $item)
     {
-    		$id = $item['id'];
+    	$id = $item['id'];
         $request->validate([
-            'title' => 'required|unique:items,title,'.$id,
+            'title' => 'required|unique:prch_items,title,'.$id,
             'brand' => 'required',
             'department' => 'required',
             'unit_id' => 'required',
             'category_id' => 'required',
+            'hsn_code' => 'required|unique:prch_items,hsn_code,'.$id,
         ]);
   
         $item->update($request->all());
@@ -173,5 +180,22 @@ class ItemController extends Controller
 	    $pdf = PDF::loadView('item.table', compact('items'));
 	    return $pdf->download('Items_'.date("d-M-Y").'.pdf');
 	  }
+
+	  public function downloadSheetFormat(){
+	  	$path = storage_path('Items-import-sheet.xls');
+	  	return Response::download($path);
+	  }
+
+	  public function excelImportItems(Request $request){
+     	$datas = Excel::import(new ItemsImport,request()->file('excel_data'));
+     	if($datas){
+     		return redirect()->route('item.index')->with('success','Item Added successfully.');
+     	}
+    }
+
+    public function excelItemsExport() 
+    {
+        return Excel::download(new ItemsExcelExport, 'Items_'.date("d-M-Y").'.xls');
+    }
 
 }

@@ -19,7 +19,8 @@
                     </ul>
                 </div>
             @endif
-
+					<div class="row">
+						<div class="col-md-8" style="border-right: 1px solid">
             <form action="{{ route('item.store') }}" method="post">
                 @csrf
                 <div class="row">
@@ -27,9 +28,14 @@
                         <label>Item Number</label>
                         <input type="text" class="form-control" value="{{ $s }}" name="item_number" readonly="">
                     </div> --}}
-                    <div class="form-group col-md-12">
+                    <div class="form-group col-md-8">
                         <label>Add Title</label>
                         <input type="text" class="form-control" placeholder="Add Title" name="title">
+                    </div>
+
+                    <div class="form-group col-md-4">
+                        <label>Add HSN Code</label>
+                        <input type="text" class="form-control" placeholder="Add HSN Code" name="hsn_code">
                     </div>
                 </div>
                 <div class="row">
@@ -75,13 +81,42 @@
                 </div>
                 <div class="row">
                     <div class="form-group col-md-12">
+                        <label>Service Type</label><br>
+                        <input type="radio" name="service_type" value="Service"> Service
+                        <input type="radio" name="service_type" value="Supplier"> Supplier
+                        <input type="radio" name="service_type" value="Mixed"> Mixed
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-md-12">
                         <label>Description</label>
                         <textarea name="description" class="form-control" rows="5" placeholder="Add description"></textarea>
                     </div>
                 </div>
-                <button type="submit" name="submit" class="btn btn-primary">Submit</button>
+                <button type="submit" class="btn btn-primary">Submit</button>
             </form>
+          	</div>
+          	<div class="col-md-4" style="border-left: 1px solid">
+          		<div class="container">
+          			<form action="{{ route('excel_import') }}" method="post" enctype="multipart/form-data">
+	          			@csrf
+	          			<h2 class="text-center mt-3">Excel Import</h2><br><br>
+	          			<input type="file" name="excel_data" id="imgupload" style="display:none">
+	          			<img src="https://icons.iconarchive.com/icons/dakirby309/simply-styled/256/Microsoft-Excel-2013-icon.png" id="OpenImgUpload"><br>
+	          			<span class="text-muted">
+	          				<a class="float-right" href="{{ route('download_sheet') }}" title="Excel Download">Click Here to download sheet format</a>
+	          			</span>
+	          			<br><br>
+	          			<button type="submit" class="btn btn-primary">Submit</button>
+            		</form>
+          		</div>
+          	</div>
+          </div>
         </div>
     </div>
 </div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script type="text/javascript">
+	$('#OpenImgUpload').click(function(){ $('#imgupload').trigger('click'); });
+</script>
 @endsection

@@ -4,9 +4,11 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Auth;
+use App\unitofmeasurement;
 use App\Member;
 use App\RfiUsers;
 use App\RfiManager;
+use App\RfiDiscardReason;
 
 class LevelOne extends Controller
 {
@@ -94,15 +96,16 @@ class LevelOne extends Controller
 	  }
 
 	  public function LevelOneApproval($id){
-	  		$data = RfiUsers::where('id',$id)->get();
+	  		$data = RfiUsers::with('discardReason')->where('id',$id)->get();
 	  		$role = $data[0]->requested_role;
+            $unit = unitofmeasurement::get();
 	  		if($role == 'Manager'){
 	  			$status = 0;
 	  		}else{
 	  			$status = 1;
 	  		}
 	  		$requested = RfiUsers::where('id',$id)->where('requested_role',$role)->where('manager_status',$status)->get();
-	  		return view('level_one.edit_levelone_approval',compact('requested'));
+	  		return view('level_one.edit_levelone_approval',compact('requested','unit'));
 	  }
 
 	  public function UpdateLevelOneApproval(Request $request, $id){
@@ -110,6 +113,16 @@ class LevelOne extends Controller
             'status' => 'required'
         ]);
         $status = $request->status;
+        if($status == 2){
+            $request->validate([
+                'discardReason' => 'required'
+            ]);
+            $reason = array(
+                'rfi_id'   =>  $id,
+                'level1_discard'  =>  $request->discardReason,
+            );
+            RfiDiscardReason::create($reason);
+        }
         RfiUsers::where('id',$id)->update(['level1_status'=> $status]);
         return redirect()->route('manager_approval')->with('success','Your status has been updated');
 	  }

@@ -34,7 +34,7 @@
                 <td>{{ $row->email }}</td>
                 <td>{{ $row->mobile }}</td>
                 <td>{{ $row->register_number }}</td>
-                <td>{{ $row->gst_number }}</td>
+                <td>@if($row->na_gst == 0){{ $row->gst_number }}@else {{ 'N/A' }} @endif</td>
                 <td>
                   <form action="{{ route('vendor.destroy',$row->id) }}" method="POST">
                     <a class="btn btn-success" href="{{ route('vendor.show',$row->id) }}"><i class="fa fa-eye" aria-hidden="true"></i></a>

@@ -46,7 +46,7 @@ class BrandController extends Controller
     {
         $validation = Validator::make($request->all(), [
         		'category_id' => 'required',
-            'name' => 'unique:brands',
+            'name' => 'unique:prch_brands',
             'description' => ''
         ]);
         if ($validation->fails())

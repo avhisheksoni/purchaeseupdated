@@ -12,6 +12,7 @@ use App\QuotationReceived;
 use App\User;
 use App\vendor;
 use App\QuotationApprovals;
+use App\QuotationApprovedById;
 use App\PO_SendToVendors;
 use App\Notifications\RFQ_Notification;
 use App\Mail\PO_SandsToVendor;
@@ -30,16 +31,9 @@ class QuotationReceivedController extends Controller
      */
     public function index()
     {	
-    		//$rfq = VendorsMailSend::latest()->paginate(10);
-    		$rfq = DB::table('vendors_mail_sends')->distinct(['quotion_sent_id'])->paginate(10);
-    		$data = QuotationApprovals::with('vendors_mail_items')->orderBy('id','desc')->get();
-    		if($rfq != ''){
-	    		$vid = json_decode($rfq[0]->email);
-	    		$vendor = array();
-	    		foreach ($vid as $key) {
-	    				$vendor[] = vendor::where('id',$key)->get();
-	    		}
-	    	}
+    		$rfq = DB::table('prch_vendors_mail_sends')->distinct(['quotion_sent_id'])->paginate(10);
+    		$data = QuotationApprovals::distinct(['quotation_id'])->get();
+
         return view('rfq.index',compact('rfq','vendor','data'))->with('i', (request()->input('page', 1) - 1) * 10);
     }
 
@@ -60,15 +54,9 @@ class QuotationReceivedController extends Controller
     }
 
     public function ReceivedQuotation($id){
-    		$data = QuotationReceived::where('quotion_sends_id',$id)->get();
-    		foreach ($data as $key) {
-    			$vid[] = $key->vender_id;
-    		}
-    		$vndr = array_unique($vid);
-    		foreach ($vndr as $val) {
-    			$vendor[] = vendor::where('id',$val)->get();
-    		} 
-				return view('rfq.receivedQuotation',compact('data','vendor'));
+    		$vendor = QuotationApprovals::with('QuotationReceived.vendorsDetail')->where('rfi_id',$id)->get();
+
+				return view('rfq.receivedQuotation',compact('data','vendor','approval'));
     }
 
     public function VendorRFQFormData($id, $vid){
@@ -81,7 +69,7 @@ class QuotationReceivedController extends Controller
 		  	 	$x = 0;
 		  	 	while($x < $count){
 		  	 		if($request->item_name[$x] !=''){
-						  $quotationItemsTable = array(
+						  $quotationItemsTable[] = array(
 					 				'item_name' => $request->item_name[$x],
 			            'item_quantity' => $request->item_quantity[$x],
 			            'item_price' => $request->item_price[$x],
@@ -95,17 +83,18 @@ class QuotationReceivedController extends Controller
 					 			'quotion_id' => $request->quotion_id,
 					 			'quotion_sends_id' => $request->quotion_sends_id,
 					 			'vender_id' => $request->vender_id,
-					 			'terms' => $request->terms
+					 			'terms' => $request->terms,
+					 			'rfi_id' => $request->rfi_id,
 					 		);
-					 		//dd($data);
-			        QuotationReceived::create($data);
 						}			  
 		  	 		$x++;
 		  	 	}
+		  	 	QuotationReceived::create($data);
 		  	 	$data1 = array(
 			 			'quotation_id' => $request->quotion_id,
 			 			'quote_id' => $request->quotion_sends_id,
-			 			'vendor_id' => $request->vender_id
+			 			'vendor_id' => $request->vender_id,
+			 			'rfi_id' => $request->rfi_id
 			 		);
 			    QuotationApprovals::create($data1);
 		  	}
@@ -115,27 +104,25 @@ class QuotationReceivedController extends Controller
     public function QuotationApproval(Request $request){
     		$manager_status = $request->manager_status;
     		$id = $request->quotion_id;
+    		$arr = array(
+    				'quotation_approval_id' => $id
+    		);
+    		QuotationApprovedById::create($arr);
     		QuotationApprovals::where('id', $id)->update(['manager_status'=> $manager_status]);
     }
 
     public function QuotationReceivedAtLevelOne(){
-    		$data = DB::table('quotation_approvals')
-            ->join('vendors', 'quotation_approvals.vendor_id', '=', 'vendors.id')
-            ->join('vendors_mail_sends', 'quotation_approvals.quote_id', '=', 'vendors_mail_sends.id')
-            ->select('quotation_approvals.*', 'vendors.*', 'vendors_mail_sends.*')
-            ->where('quotation_approvals.manager_status', '=', 1)->get();
+    		$data = DB::table('prch_quotation_approvals')
+            ->join('prch_vendors', 'prch_quotation_approvals.vendor_id', '=', 'prch_vendors.id')
+            ->join('prch_vendors_mail_sends', 'prch_quotation_approvals.quote_id', '=', 'prch_vendors_mail_sends.id')
+            ->select('prch_quotation_approvals.*', 'prch_vendors.*', 'prch_vendors_mail_sends.*')
+            ->where('prch_quotation_approvals.manager_status', '=', 1)->get();
+
     		return view('rfq.quotationReceived_levelone',compact('data'))->with('i', (request()->input('page', 1) - 1) * 10);
     }
 
     public function QuotationApprovalByLevelOne($id){
-    		$data = QuotationReceived::where('quotion_sends_id',$id)->get();
-    		foreach ($data as $key) {
-    			$vid[] = $key->vender_id;
-    		}
-    		$vndr = array_unique($vid);
-    		foreach ($vndr as $val) {
-    			$vendor[] = vendor::where('id',$val)->get();
-    		}
+    		$vendor = QuotationApprovals::with('QuotationReceived.vendorsDetail')->where('rfi_id',$id)->get();
     		return view('rfq.qa_level_one',compact('data','vendor','manager_approved'));
     }
 
@@ -147,32 +134,18 @@ class QuotationReceivedController extends Controller
 
 
     public function QuotationReceivedAtLevelTwo(){
-    		/*$manager_approved = QuotationApprovals::where('manager_status','1')->where('level1_status','1')->get();
-    		foreach ($manager_approved as $value) {
-    			$quotation_id = $value->quote_id;
-    			$v_id = $value->vendor_id;
-    			$rfq[] = VendorsMailSend::where('id',$quotation_id)->get();
-	    		$vendor[] = vendor::where('id',$v_id)->get();
-    		} 
-    		return view('rfq.quotationReceived_leveltwo',compact('rfq','vendor','manager_approved'))->with('i', (request()->input('page', 1) - 1) * 10);*/
-
-    		$data = DB::table('quotation_approvals')
-            ->join('vendors', 'quotation_approvals.vendor_id', '=', 'vendors.id')
-            ->join('vendors_mail_sends', 'quotation_approvals.quote_id', '=', 'vendors_mail_sends.id')
-            ->select('quotation_approvals.*', 'vendors.*', 'vendors_mail_sends.*')
-            ->where('quotation_approvals.manager_status', '=', 1)->where('quotation_approvals.level1_status', '=', 1)->get();
+    		$data = DB::table('prch_quotation_approvals')
+            ->join('prch_vendors', 'prch_quotation_approvals.vendor_id', '=', 'prch_vendors.id')
+            ->join('prch_vendors_mail_sends', 'prch_quotation_approvals.quote_id', '=', 'prch_vendors_mail_sends.id')
+            ->select('prch_quotation_approvals.*', 'prch_vendors.*', 'prch_vendors_mail_sends.*')
+            ->where('prch_quotation_approvals.manager_status', '=', 1)->where('prch_quotation_approvals.level1_status', '=', 1)->get();
+            
         return view('rfq.quotationReceived_leveltwo',compact('data'))->with('i', (request()->input('page', 1) - 1) * 10);
     }
 
     public function QuotationApprovalByLevelTwo($id){
-    		$data = QuotationReceived::where('quotion_sends_id',$id)->get();
-    		foreach ($data as $key) {
-    			$vid[] = $key->vender_id;
-    		}
-    		$vndr = array_unique($vid);
-    		foreach ($vndr as $val) {
-    			$vendor[] = vendor::where('id',$val)->get();
-    		}
+    		$vendor = QuotationApprovals::with('QuotationReceived.vendorsDetail')->where('rfi_id',$id)->get();
+
     		return view('rfq.qa_level_two',compact('data','vendor','manager_approved'));
     }
 
@@ -180,45 +153,21 @@ class QuotationReceivedController extends Controller
     		$level2_status = $request->level2_status;
     		$id = $request->ApprovalId;
     		QuotationApprovals::where('id', $id)->update(['level2_status'=> $level2_status]);
-    		
-    		/*$data = array(
-  					'vendor_id'		=>	$id,
-  					'approval_quotation_id' => $request->approval_quotation_id, 
-  					'po_id'	=>	'#PO'.str_pad($nextval, 4, '0', STR_PAD_LEFT),
-  			);
-  			$datas = PO_SendToVendors::create($data);*/
     }
 
     public function ApprovalQuotation(){
-    		$data = DB::table('quotation_approvals')
-            ->join('vendors', 'quotation_approvals.vendor_id', '=', 'vendors.id')
-            ->join('vendors_mail_sends', 'quotation_approvals.quote_id', '=', 'vendors_mail_sends.id')
-            ->orderBy('quotation_approvals.created_at', 'desc')
-            ->select('quotation_approvals.*', 'vendors.*', 'vendors_mail_sends.*')
-            ->where('quotation_approvals.manager_status', '=', 1)->where('quotation_approvals.level1_status', '=', 1)->where('quotation_approvals.level2_status', '=', 1)->paginate(10);
+    		$data = QuotationApprovals::with('QuotationReceived.vendorsDetail')
+        				->where('manager_status',1)
+        				->where('level1_status',1)
+        				->where('level2_status',1)
+        				->get();
+
         return view('rfq.approval_quotation',compact('data'))->with('i', (request()->input('page', 1) - 1) * 10);
     }
 
     public function ApprovalQuotationItems($id){
-    		$approvedData = DB::table('quotation_approvals')
-            ->join('vendors', 'quotation_approvals.vendor_id', '=', 'vendors.id')
-            ->join('vendors_mail_sends', 'quotation_approvals.quote_id', '=', 'vendors_mail_sends.id')
-            ->orderBy('quotation_approvals.created_at', 'desc')
-            ->select('quotation_approvals.*', 'vendors.*', 'vendors_mail_sends.*')
-            ->where('quotation_approvals.manager_status', '=', 1)->where('quotation_approvals.level1_status', '=', 1)->where('quotation_approvals.level2_status', '=', 1)->where('quotation_approvals.quote_id', '=', $id)->paginate(10);
-        foreach ($approvedData as $key) {
-    			$quote_id = $key->quote_id;
-    			$vid = $key->vendor_id;
-    			$data = QuotationReceived::where('quotion_sends_id',$quote_id)->where('vender_id',$vid)->get();
-    		}
-    		// $data = QuotationReceived::where('quotion_sends_id',$id)->get();
-    		// foreach ($data as $key) {
-    		// 	$vid[] = $key->vender_id;
-    		// }
-    		// $vndr = array_unique($vid);
-    		// foreach ($vndr as $val) {
-    		// 	$vendor[] = vendor::where('id',$val)->get();
-    		// }
+    		$data = QuotationApprovals::with('QuotationReceived.vendorsDetail')->where('id',$id)->get();
+
     		return view('rfq.approvalQuotation_item',compact('data','vendor','manager_approved','vid'));
     }
 
@@ -228,7 +177,7 @@ class QuotationReceivedController extends Controller
     		$pdf = PDF::loadView('rfq.PO_mail_data', compact('tbl','tbl1'));
     		$pdf = $pdf->Output('', 'S');
 
-    		$autoId = DB::select(DB::raw("SELECT nextval('po_send_to_vendors_id_seq')"));
+    		$autoId = DB::select(DB::raw("SELECT nextval('prch_po_send_to_vendors_id_seq')"));
 				$nextval = $autoId[0]->nextval+1;
 				//$nextval = Helper::getRFQSendMailAutoIncrementId();
   			$data = array(

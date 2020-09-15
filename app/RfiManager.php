@@ -7,5 +7,5 @@ use Illuminate\Database\Eloquent\Model;
 class RfiManager extends Model
 {
     protected $guarded = [];
-    protected $table = 'rfi_manager';
+    protected $table = 'prch_rfi_manager';
 }

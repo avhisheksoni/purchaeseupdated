@@ -71,32 +71,28 @@
 		              <th>Quotation Id</th>
 		              <th>Vendor's Count</th>
 		              <th>Items Counts</th>
-		              <th>Manager</th>
+		              <!-- <th>Manager</th>
 		              <th>Level 1</th>
-		              <th>Level 2</th>
+		              <th>Level 2</th> -->
 		              <th>Action</th>
 		            </tr>
 		          </thead>
 		          <tbody>
 		          		<?php //dd($data[0]['vendors_mail_items']->email); ?>
-		          		@if (!empty($data))
 		          			<?php 
-		          					$n = 1;
-		          			?>
-			              @foreach ($data as $rows)
+		          				if (!empty($data)){
+				              	$n = 1;
+				              	$arr = array();
+				              	foreach ($data as $rows){
+			              ?>
 			              <tr>
 			                <td>{{ $n++ }}</td>
 			                <td>{{ $rows->quotation_id }}</td>
 			                <td>
 			                	{{ count(json_decode($rows['vendors_mail_items']->email)) }}
-			                	{{-- <select class="form-control">
-			                		@foreach($vendor as $vndr)
-			                			<option>{{ $vndr[0]->firm_name }}</option>
-													@endforeach
-			                	</select> --}}
 			                </td>
 			                <td>{{ count(json_decode($rows['vendors_mail_items']->item_list)) }}</td>
-			                <td>
+			                <!-- <td>
 			                	@if($rows->manager_status == 0)
 			                		<span style=" color:#ff9a00 ; font-weight: bold">Pending</span>
 			                	@elseif($rows->manager_status == 1) 
@@ -104,7 +100,7 @@
 			                	@endif
 			                </td>
 			                <td>
-												@if($rows->level1_status == 0) 
+			                												@if($rows->level1_status == 0) 
 			                		<span style=" color:#ff9a00 ; font-weight: bold">Pending</span>
 			                	@elseif($rows->level1_status == 1)
 			                		<span style=" color:green; font-weight: bold">Approved</span>
@@ -120,13 +116,12 @@
 			                	@elseif($rows->level2_status == 2)
 			                		<span style=" color:red; font-weight: bold">Discard</span>
 			                	@endif
-			                </td>
+			                </td> -->
 			                <td>
-			                  <a class="btn btn-success" href="{{ route('receivedQuotation',$rows->quote_id) }}" title="Received Quotation"><i class="fa fa-mail-reply"></i> </a>
+			                  <a class="btn btn-success" href="{{ route('receivedQuotation',$rows->rfi_id) }}" title="Received Quotation"><i class="fa fa-mail-reply"></i> </a>
 			                </td>
 			              </tr>
-			              @endforeach
-			            @endif
+			              <?php } } ?>
 		          </tbody>
 		        </table>
 		        {!! $rfq->links() !!}

@@ -43,7 +43,7 @@ class ItemCategoryController extends Controller
     public function store(Request $request)
     {
         $validation = Validator::make($request->all(), [
-            'name' => 'unique:item_categories',
+            'name' => 'unique:prch_item_categories',
             'description' => ''
         ]);
         if ($validation->fails())

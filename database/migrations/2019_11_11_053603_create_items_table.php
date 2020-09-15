@@ -13,7 +13,7 @@ class CreateItemsTable extends Migration
      */
     public function up()
     {
-        Schema::create('items', function (Blueprint $table) {
+        Schema::create('prch_items', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('item_number');
             $table->text('description');
@@ -22,6 +22,8 @@ class CreateItemsTable extends Migration
             $table->string('department');
             $table->integer('category_id');
             $table->integer('unit_id');
+            $table->integer('hsn_code')->nullable();
+            $table->string('service_type')->nullable();
             $table->timestamps();
         });
     }
@@ -33,6 +35,6 @@ class CreateItemsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('items');
+        Schema::dropIfExists('prch_items');
     }
 }

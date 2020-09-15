@@ -31,7 +31,7 @@
 	              @foreach($data as $row)
 	              <tr>
 	                <td>{{ ++$i }}</td>
-	                <td>{{ $row->quotion_id }}</td>
+	                <td>{{ $row->quotation_id }}</td>
 	                <td>{{ $row->firm_name }}</td>
 	                <td>{{ count(json_decode($row->item_list)) }}</td>
 	                <td>
@@ -54,7 +54,7 @@
 	                	@endif
 	                </td>
 	                <td>
-	                  <a class="btn btn-success" href="{{ route('qa_level_two',$row->id) }}"><i class="fa fa-mail-reply"></i> Received</a>
+	                  <a class="btn btn-success" href="{{ route('qa_level_two',$row->rfi_id) }}"><i class="fa fa-mail-reply"></i> Received</a>
 	                </td>
 	              </tr>
 	              @endforeach

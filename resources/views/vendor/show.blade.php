@@ -40,7 +40,14 @@
                 <div class="row">
                     <div class="form-group col-md-12">
                         <label>GST No.</label>
-                        <input type="text" class="form-control"  value="{{ $vendor->gst_number }}" name="gst_number" readonly="">
+                        @if($vendor->na_gst == 0)
+                            <input type="text" class="form-control"  value="{{ $vendor->gst_number }}" name="gst_number" readonly="">
+                        @else
+                            <div class="checkbox" style="font-size: 12px; font-weight: bold; ">
+                                <input type="checkbox" name="na_gst" value="1" checked=""><span style="color: #000; margin-right: 5px">
+                                <span style="color:#a94444; margin-right: 5px">GST no. not available</span>
+                            </div>
+                        @endif
                     </div>
                 </div>
                 <div class="row">

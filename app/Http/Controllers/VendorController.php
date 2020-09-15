@@ -7,6 +7,8 @@ use Helper;
 use App\vendor;
 use App\item;
 use App\GST_State_Code;
+use App\Brand;
+use App\item_category;
 use Illuminate\Http\Request;
 
 class VendorController extends Controller
@@ -34,9 +36,11 @@ class VendorController extends Controller
      */
     public function create()
     {
-    		$items = item::all();
-    		$gst = DB::table('gst_state_codes')->get();
-        return view('vendor.create', compact('items','gst'));
+    	$items = item::all();
+        $gst = DB::table('prch_gst_state_codes')->get();
+        $subcategory = Brand::all();
+        $category = item_category::all();
+        return view('vendor.create', compact('items','category','subcategory','gst'));
     }
 
     /**
@@ -47,18 +51,30 @@ class VendorController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'name' => 'required',
-            'email' => '',
-            'mobile' => 'required|numeric|unique:vendors',
-            'address' => 'required',
-            'firm_name' => 'required',
-            'item_id' => 'required',
-            'gst_number' => 'required|unique:vendors',
-            'gst_state_code' => 'required'
-        ]);
+        $na_gst = $request->na_gst;
+        if($na_gst == null){
+            $request->validate([
+                'name' => 'required',
+                'email' => '',
+                'mobile' => 'required|numeric|unique:prch_vendors',
+                'address' => 'required',
+                'firm_name' => 'required',
+                'item_id' => 'required',
+                'gst_number' => 'required|unique:prch_vendors',
+                'gst_state_code' => 'required'
+            ]);
+        }else{
+            $request->validate([
+                'name' => 'required',
+                'email' => '',
+                'mobile' => 'required|numeric|unique:prch_vendors',
+                'address' => 'required',
+                'firm_name' => 'required',
+                'item_id' => 'required'
+            ]);
+        }
   			
-        $ids = DB::select(DB::raw("SELECT nextval('vendors_id_seq')"));
+        $ids = DB::select(DB::raw("SELECT nextval('prch_vendors_id_seq')"));
   			$id = $ids[0]->nextval+1;
   			//$id = Helper::getVendorAutoIncrementId();
 
@@ -66,9 +82,10 @@ class VendorController extends Controller
   					'name' => $request->name,
   					'email' => $request->email,
   					'mobile' => $request->mobile,
-  					'register_number' => $request->gst_state_code.'00'.str_pad($id, 4, '0', STR_PAD_LEFT),
+                    'na_gst' => ($na_gst == null) ? 0 : $na_gst,
+  					'register_number' => ($na_gst == null) ? $request->gst_state_code : '99'.'00'.str_pad($id, 4, '0', STR_PAD_LEFT),
   					'firm_name' => $request->firm_name,
-  					'gst_number' => $request->gst_state_code.$request->gst_number,
+  					'gst_number' => ($na_gst != null) ? '' : $request->gst_state_code.$request->gst_number,
   					'alt_number' => $request->alt_number,
   					'address' => $request->address,
   					'item_id' => json_encode($request->item_id),
@@ -104,7 +121,7 @@ class VendorController extends Controller
     public function edit(vendor $vendor)
     {
         $items = item::all();
-        $gst = DB::table('gst_state_codes')->get();
+        $gst = DB::table('prch_gst_state_codes')->get();
         return view('vendor.edit',compact('vendor','items','gst'));
     }
 
@@ -117,27 +134,41 @@ class VendorController extends Controller
      */
     public function update(Request $request, vendor $vendor)
     {
-        $request->validate([
-            'name' => 'required',
-            'email' => '',
-            'mobile' => 'required|numeric',
-            'address' => 'required',
-            'register_number' => 'required',
-            'firm_name' => 'required',
-            'gst_number' => 'required',
-            'gst_state_code' => 'required'
-        ]);
+        $na_gst = $request->na_gst;
+        if($na_gst == null){
+            $request->validate([
+                'name' => 'required',
+                'email' => '',
+                'mobile' => 'required|numeric',
+                'address' => 'required',
+                'register_number' => 'required',
+                'firm_name' => 'required',
+                'item_id' => 'required',
+                'gst_number' => 'required',
+                'gst_state_code' => 'required'
+            ]);
+        }else{
+            $request->validate([
+                'name' => 'required',
+                'email' => '',
+                'mobile' => 'required|numeric',
+                'address' => 'required',
+                'firm_name' => 'required',
+                'item_id' => 'required'
+            ]);
+        }
   				
-  			$data = array(
-  					'name' => $request->name,
-  					'email' => $request->email,
-  					'mobile' => $request->mobile,
-  					'firm_name' => $request->firm_name,
-  					'gst_number' => $request->gst_state_code.$request->gst_number,
-  					'alt_number' => $request->alt_number,
-  					'address' => $request->address,
-  					'item_id' => json_encode($request->item_id),
-  			);
+		$data = array(
+    		'name' => $request->name,
+    		'email' => $request->email,
+    		'mobile' => $request->mobile,
+    		'firm_name' => $request->firm_name,
+            'na_gst' => ($na_gst == null) ? 0 : $na_gst,
+    		'gst_number' => ($na_gst != null) ? '' : $request->gst_state_code.$request->gst_number,
+    		'alt_number' => $request->alt_number,
+    		'address' => $request->address,
+    		'item_id' => json_encode($request->item_id),
+		);
         $vendor->update($data);
   
         return redirect()->route('vendor.index')->with('success','Vendors details updated successfully');

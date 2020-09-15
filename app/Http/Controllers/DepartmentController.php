@@ -44,7 +44,7 @@ class DepartmentController extends Controller
     public function store(Request $request)
     {
         $validation = Validator::make($request->all(), [
-            'name' => 'unique:brands',
+            'name' => 'unique:prch_departments',
             'description' => ''
         ]);
         if ($validation->fails())

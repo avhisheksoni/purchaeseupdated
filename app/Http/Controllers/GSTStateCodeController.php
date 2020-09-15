@@ -21,7 +21,8 @@ class GSTStateCodeController extends Controller
      */
     public function index()
     {
-        $gst = DB::table('gst_state_codes')->latest()->paginate(10);
+        $gst = DB::table('prch_gst_state_codes')->orderBy('id', 'ASC')->paginate(10);
+        // $gst = DB::table('prch_gst_state_codes')->latest()->paginate(10);
         return view('gst_state_code',compact('gst'))->with('i', (request()->input('page', 1) - 1) * 10);
     }
 
@@ -92,7 +93,7 @@ class GSTStateCodeController extends Controller
      */
     public function update(Request $request, GST_State_Code $gST_State_Code)
     {
-        DB::table('gst_state_codes')->where('id', $request->input('id'))->update(['state_name' => $request->input('state_name')]);
+        DB::table('prch_gst_state_codes')->where('id', $request->input('id'))->update(['state_name' => $request->input('state_name')]);
     }
 
     /**
@@ -103,7 +104,7 @@ class GSTStateCodeController extends Controller
      */
     public function destroy($id)
     {
-        DB::table('gst_state_codes')->where('id',$id)->delete();
+        DB::table('prch_gst_state_codes')->where('id',$id)->delete();
         return redirect()->route('gst_state_code.index')->with('success','GST State deleted successfully');
     }
 }

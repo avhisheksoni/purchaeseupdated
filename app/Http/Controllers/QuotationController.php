@@ -50,10 +50,10 @@ class QuotationController extends Controller
     		//dd($request);
         $request->validate([
             'name' => 'required',
-            'mobile' => 'required|unique:quotations',
-            'register_number' => 'required|unique:quotations',
+            'mobile' => 'required|unique:prch_quotations',
+            'register_number' => 'required|unique:prch_quotations',
             'firm_name' => 'required',
-            'gst_number' => 'required|unique:quotations',
+            'gst_number' => 'required|unique:prch_quotations',
         ]);
 
         $quotation = quotation::create($request->all());

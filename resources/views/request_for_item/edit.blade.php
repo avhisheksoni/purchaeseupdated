@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="container-fluid">
-    <a href="{{ '/request_for_item' }}" class="main-title-w3layouts mb-2 float-right"><i class="fa fa-arrow-left"></i>  Back</a>
+    <!-- <a href="{{ '/request_for_item' }}" class="main-title-w3layouts mb-2 float-right"><i class="fa fa-arrow-left"></i>  Back</a> -->
     <h5 class="main-title-w3layouts mb-2">View RFI</h5>
     <div class="card shadow mb-4">
         <div class="card-body">
@@ -43,7 +43,19 @@
 			              	<input type="text" name="item_name[]" id="item_name{{ $m }}" class="form-control input-sm" value="{{ $row->item_name }}" readonly="" />
 			              </td>
 			              <td>
-			              	<input type="number" name="quantity[]" id="quantity{{ $m }}" data-srno="{{ $m }}" class="form-control input-sm quantity" value="{{ $row->quantity }}" readonly="" />
+			              	<div class="row">
+                        		<div class="col-md-8">
+			              			<input type="number" name="quantity[]" id="quantity{{ $m }}" data-srno="{{ $m }}" class="form-control input-sm quantity" value="{{ $row->quantity }}" readonly="" />
+			              		</div>
+
+			                    <div class="col-md-4">
+			                      	<select name="unit[]" id="unit1" data-srno="1" class="form-control input-sm unit" >
+			                      		@foreach($unit as $rows)
+				                          <option value="{{$rows->id}}" @if(!empty($unit)) @if($row->unit_id == $rows->id) selected @endif @endif >{{ $rows->name }}</option>
+				                        @endforeach
+				                    </select>
+			                    </div>
+			                </div>
 			              </td>
 			              <td>
 			              	{{-- <input type="text" name="description[]" id="description{{ $m }}" data-srno="{{ $m }}" class="form-control input-sm number_only description" value="{{ $row->description }}" /> --}}
