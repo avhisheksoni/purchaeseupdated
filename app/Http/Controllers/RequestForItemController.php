@@ -197,7 +197,7 @@ class RequestForItemController extends Controller
         $warehouse = Warehouse::get();
         foreach ($data as $requestForItem) {
           $requested_user_id = $requestForItem->user_id;
-          $mem = User::where('id',$requested_user_id)->get();
+          $mem = User::select('id','name','email','filestack_id','workspace_id','parent_id')->where('id',$requested_user_id)->get();
           foreach ($mem as $mem_details) {
             return view('request_for_item.check_users_rfi',compact('requestForItem', 'mem_details', 'unit', 'warehouse'));
           }

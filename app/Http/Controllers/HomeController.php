@@ -45,5 +45,8 @@ class HomeController extends Controller
         else{
             return redirect('http://laxyo.org/login');
         }
+   	
+        return view('home');
+
     }
 }

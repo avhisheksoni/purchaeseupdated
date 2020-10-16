@@ -119,8 +119,10 @@ $('document').ready(function(){
 	        method:"POST",
 	        data:{warehouse_id:value, item_num:item_num, req_qty:req_qty, _token:_token},
 	        success:function(data){
-	        	$('#item-'+item_num).html(data);
-	        	$('#err-<?php echo $user_id; ?>').attr("disabled", true);
+	        	if(data !=''){
+	        	   	$('#item-'+item_num).html(data);
+	        		$('#err-<?php echo $user_id; ?>').attr("disabled", true);
+	        	}
 	        }
 	      });
 	    }
