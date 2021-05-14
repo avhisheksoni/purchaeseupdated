@@ -13,4 +13,8 @@ class RfiUsers extends Model
     public function discardReason(){
     	return $this->belongsTo('App\RfiDiscardReason', 'id', 'rfi_id');
     }
+
+    public function address(){
+        return $this->belongsTo("App\Warehouse", "address_wareh_id", "id");
+    }
 }

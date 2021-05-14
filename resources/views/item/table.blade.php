@@ -1,4 +1,4 @@
- <table class="table table-bordered tbl-hide-cls table-item" id="dataTables" width="100%" cellspacing="0">
+<table class="table table-bordered tbl-hide-cls table-item" id="dataTables" width="100%" cellspacing="0">
           <thead>
             <tr>
               <th>S.No</th>
@@ -9,6 +9,8 @@
               <th>Subcategory</th>
               <th>Department</th>
               <th>Unit</th>
+              <th>Item type</th>
+              <th>Quantity</th>
               <th>Action</th>
             </tr>
           </thead>
@@ -24,6 +26,8 @@
                 <td>{{ $row->brand_name->name }}</td>
                 <td>{{ $row->department_name->name }}</td>
                 <td>{{ $row->unit->name }}</td>               	
+                <td>{{ $row->consum->cat_name }}</td>                 
+                <td>{{ $row->quantity }}</td>                 
                 <td>
                   <form action="{{ route('item.destroy',$row->id) }}" method="POST">
                     <a class="btn btn-success" href="{{ route('item.show',$row->id) }}" title="Show"><i class="fa fa-eye" aria-hidden="true"></i></a>
@@ -37,6 +41,7 @@
               @endforeach
             @endif
           </tbody>
+          {{ $items->links() }}
         </table>
  <script type="text/javascript" charset="utf8" src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.7.1.min.js"></script>
 <script type="text/javascript" charset="utf8" src="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.0/jquery.dataTables.min.js"></script>

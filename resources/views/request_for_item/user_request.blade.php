@@ -1,5 +1,4 @@
 @extends('../layouts.sbadmin2')
-
 @section('content')
 <!-- Begin Page Content -->
 <div class="container-fluid">
@@ -29,6 +28,7 @@
           <tbody>
           	@if (!empty($request_for_items))
             	@foreach($request_for_items as $row)
+              {{-- {{ dd($row) }} --}}
             	<tr id="bgclr{{$row->id}}">
                 <td>{{ ++$i }}</td>
                 <td>Users are generated new items request</td>

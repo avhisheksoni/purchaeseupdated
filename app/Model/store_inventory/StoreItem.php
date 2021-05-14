@@ -16,4 +16,10 @@ class StoreItem extends Model
     public function store_warehouse(){
     	return $this->belongsTo('App\Warehouse', 'warehouse_id');
     }
+
+
+    public function itemdetails(){
+        return $this->belongsTo('App\item', 'item_id', 'id');
+    }
+
 }

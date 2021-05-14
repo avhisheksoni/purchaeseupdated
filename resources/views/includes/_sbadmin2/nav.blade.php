@@ -1,4 +1,5 @@
 <!-- Topbar -->
+{{--  {{ dd( $notification) }} --}}
 <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
 
   <!-- Sidebar Toggle (Topbar) -->
@@ -6,18 +7,20 @@
     <i class="fa fa-bars"></i>
   </button>
 
+  <div class="col text-center" style="font-size:20px; color: black; font-weight: 500; font-family: lucida console, monospace;" >PURCHASE & INVENTORY</div>
   <!-- Topbar Navbar -->
   <ul class="navbar-nav ml-auto">
-		@hasrole(3)
+
+
 
 		<!-- Notifications -->
     <li class="nav-item dropdown no-arrow mx-1">
       <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
         <i class="fas fa-bell fa-fw"></i>
-        <span class="badge badge-danger badge-counter">{{ count(Auth::user()->unreadNotifications) }}</span>
+        <span class="badge badge-danger badge-counter">{{-- {{ count(Auth::user()->unreadNotifications) }} --}}</span>
       </a>
       <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="alertsDropdown">
-      	@foreach(Auth::user()->unreadNotifications as $notification)
+      {{-- 	@foreach(Auth::user()->unreadNotifications as $notification) --}}
         <a class="dropdown-item d-flex align-items-center" href="#">
           <div class="mr-3">
             <div class="icon-circle bg-primary">
@@ -25,16 +28,17 @@
             </div>
           </div>
           <div>
-            <div class="small text-gray-500">{{ $notification['data']['date'] }}</div>
-            <span class="font-weight-bold">{{$notification['data']['name']}}</span>
+
+            <div class="small text-gray-500">{{-- {{ $notification['data']['date'] }} --}}</div>
+            <span class="font-weight-bold">{{-- {{$notification['data']['name']}} --}}</span>
           </div>
         </a>
-        @endforeach
+       {{--  @endforeach --}}
         <a class="dropdown-item text-center small text-gray-500" href="#">Show All Notifications</a>
       </div>
     </li>
 		<!-- Notifications -->
-		@endrole
+		
 
     <div class="topbar-divider d-none d-sm-block"></div>
 
@@ -42,7 +46,7 @@
     <li class="nav-item dropdown no-arrow">
       <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
         <span class="mr-2 d-none d-lg-inline text-gray-600 small">{{ Auth::user()->name }}</span>
-        <img class="img-profile rounded-circle" src="http://www.laxyo.com/images/favicon.png">
+        
       </a>
       <!-- Dropdown - User Information -->
       <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">

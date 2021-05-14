@@ -50,7 +50,8 @@ class VendorController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-    {
+    {  
+        // return $request->all();
         $na_gst = $request->na_gst;
         if($na_gst == null){
             $request->validate([

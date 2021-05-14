@@ -49,50 +49,36 @@
 			              <th>Description</th>
 			              <th></th>
 			            </tr>
-			            <?php 
-				            $m = 0; 
-				            foreach($requested as $rows){
-				            	$value = json_decode($rows->requested_data);
-				            	foreach ($value as $row) {
-				            		$m = $m + 1;
-                        //dd($row);
-				          ?>
+			            <?php
+                        $m=1; 
+                    foreach ($quo as $res) { ?>
+                  
 			            <tr>
 			              <td>
-			              	<span id="sr_no">{{ $m }}</span>
+			              	<span id="sr_no"><?= $m++ ?></span>
 			              </td>
 			              <td>
-			              	<input type="text" name="item_name[]" id="item_name{{ $m }}" class="form-control input-sm" value="{{ $row->item_name }}" readonly />
+			              	<input type="text" name="item_name[]" id="item_name" class="form-control input-sm" value="{{ $res->item_name }}" readonly />
 			              </td>
 			              <td>
                       <div class="row">
                         <div class="col-md-8">
-			              	    <input type="number" name="quantity[]" id="quantity{{ $m }}" data-srno="{{ $m }}" class="form-control input-sm quantity" value="{{ $row->quantity }}" readonly />
+			              	    <input type="number" name="quantity[]" id="quantity" data-srno="" class="form-control input-sm quantity" value="{{ $res->quantity }}" readonly />
                         </div>
-                        <div class="col-md-4">
-                          <?php 
-                            foreach($unit as $rows){
-                              $uid = $row->unit_id;
-                              $unit_id = $rows->id;
-                              if($uid == $unit_id){
-                          ?>
-                            <input type="text" name="unit[]" id="unit{{ $m }}" class="form-control input-sm" value="{{ $rows->name }}" readonly />
-                          <?php
-                              }
-                            }
-                          ?>
-                        </div>
+                        {{-- <div class="col-md-4">
+                            <input type="text" name="unit[]" id="unit" class="form-control input-sm" value="" readonly />
+                        </div> --}}
                       </div>
 			              </td>
 			              <td>
-			              	<textarea name="description[]" id="description{{ $m }}" data-srno="{{ $m }}" class="form-control input-sm number_only description" readonly >{{ $row->description }}</textarea>
+			              	<textarea name="description[]" id="description" data-srno="" class="form-control input-sm number_only description" readonly >{{ $res->description }}</textarea>
 			              </td>
 			              <td></td>
 			            </tr>
-			            <?php } } ?>
+			           <?php } ?>
 			          </table>
-			          <input type="hidden" name="user_id" value="{{ $row->user_id }}" />
-			          <input type="hidden" name="req_user_table_id" value="{{ $requested[0]->id }}" />
+			          <input type="hidden" name="user_id" value="" />
+			          <input type="hidden" name="req_user_table_id" value="" />
                 <!-- Modal -->
                   <div class="modal fade" id="myModal" role="dialog">
                     <div class="modal-dialog">
@@ -103,7 +89,7 @@
                           <button type="button" class="close modalCloss" data-dismiss="modal">&times;</button>
                         </div>
                         <div class="modal-body">
-                          <textarea name="discardReason" id="discardReason" class="form-control input-sm number_only discardReason" placeholder="Enter Reason.. Why you discard ?">@if($rows->discardReason != null) {{ $rows->discardReason->level1_discard }} @endif</textarea>
+                          <textarea name="discardReason" id="discardReason" class="form-control input-sm number_only discardReason" placeholder="Enter Reason.. Why you discard ?"></textarea>
                         </div>
                         <div class="modal-footer">
                           <button type="button" class="btn btn-default modalCloss" data-dismiss="modal">Close</button>
@@ -187,46 +173,4 @@
 </style>
 @endsection
 <script type="text/javascript" charset="utf8" src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.7.1.min.js"></script>
-<script>
-$(document).ready(function(){
-  var final_total_amt = $('#final_total_amt').text();
-  var count = <?php echo $m; ?>;
-  
-  $(document).on('click', '#add_row', function(){
-    count++;
-    $('#total_item').val(count);
-    var html_code = '';
-    html_code += '<tr id="row_id_'+count+'">';
-    html_code += '<td><span id="sr_no">'+count+'</span></td>';
-    
-    html_code += '<td><input type="text" name="item_name[]" id="item_name'+count+'" class="form-control input-sm" /><input type="hidden" name="user_id[]" value="{{ Auth::user()->id }}" id="user_id'+count+'" class="form-control input-sm" /></td>';
-    html_code += '<td><input type="text" name="quantity[]" id="quantity'+count+'" data-srno="'+count+'" class="form-control input-sm number_only quantity" /></td>';
-    html_code += '<td><textarea name="description[]" id="description'+count+'" data-srno="'+count+'" class="form-control input-sm number_only description"></textarea></td>';
-    html_code += '<td><button type="button" name="remove_row" id="'+count+'" class="btn btn-danger btn-xs remove_row">X</button></td>';
-    html_code += '</tr>';
-    $('#invoice-item-table').append(html_code);
-  });
-  
-  $(document).on('click', '.remove_row', function(){
-    var row_id = $(this).attr("id");
-    var total_item_amount = $('#order_item_final_amount'+row_id).val();
-    var final_amount = $('#final_total_amt').text();
-    var result_amount = parseFloat(final_amount) - parseFloat(total_item_amount);
-    $('#final_total_amt').text(result_amount);
-    $('#row_id_'+row_id).remove();
-    count--;
-    $('#total_item').val(count);
-  });
-  
-});
-</script>
-<script>
-  $(document).ready(function(){
-    $('.modalCloss').on('click', function(){
-      var val = $('#discardReason').val();
-      if(val == ''){
-        $('#dismissResponce').prop('checked', false);
-      }
-    });
-  });
-</script>
+{{--  --}}

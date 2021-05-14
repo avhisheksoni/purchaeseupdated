@@ -23,10 +23,11 @@ Route::get('/home', 'HomeController@index')->name('home');
 
 // for Quotation
 
-Route::get('vendor_form/{id}/{vid}', 'QuotationReceivedController@VendorRFQFormData')->name('vendor_form');
+Route::get('vendor_form/{id}/{vid}/{pidnew}', 'QuotationReceivedController@VendorRFQFormData')->name('vendor_form');
 Route::post('vendorformstore/{id}/{vid}', 'QuotationReceivedController@VendorRFQFormDataStore')->name('vendorformstore');
 Route::get('po_accepts/{po_id}/{vid}', 'POSendToVendorsController@POAcceptsByVendor')->name('po_accepts');
 Route::post('po_accepts_data/{po_id}/{vid}', 'POSendToVendorsController@POAcceptsByVendorDataStore')->name('po_accepts_data');
+ Route::post('back-to-store/{id}', 'RequestForItemController@backtostore')->name('back-to-store');
 
 
 /*Route::resource('quotation', 'QuotationController');
@@ -60,8 +61,9 @@ Route::group(['middleware' => ['role:purchase_superadmin']], function() {
 		Route::POST('filter', 'ItemController@filter')->name('filter');
 		Route::get('export_pdf', 'ItemController@export_pdf')->name('export_pdf');
 		Route::POST('excel_import', 'ItemController@excelImportItems')->name('excel_import');
+        Route::POST('excel_import_new', 'ItemController@excelItemsnew')->name('excel_import_new');
 		Route::get('excel_export', 'ItemController@excelItemsExport')->name('excel_export');
-		Route::get('download_sheet', 'ItemController@downloadSheetFormat')->name('download_sheet');
+		Route::get('avhi', 'ItemController@downloadSheetFormat')->name('avhi');
 		Route::resource('/department', 'DepartmentController');
 		Route::resource('/subcategory', 'BrandController');
 		Route::post('/purchase/fetch', 'PurchaseController@fetch')->name('fetch');
@@ -92,15 +94,23 @@ Route::group(['middleware' => ['role:purchase_manager']], function () {
 Route::group(['middleware' => ['role:purchase_user|purchase_manager']], function () {
 	Route::resource('request_for_item', 'RequestForItemController');
 	Route::post('/request_for_item/fetch', 'RequestForItemController@fetch')->name('fetch');
+	Route::get('/item_of_stock', 'RequestForItemController@itemofstock')->name('item_of_stock');
+    Route::get('/un_item_of_stock', 'RequestForItemController@unitemofstock')->name('un_item_of_stock');
+
 });
 
 Route::group(['middleware' => ['role:purchase_manager']], function () {
     Route::resource('rfq', 'QuotationReceivedController');
     Route::get('user_request', 'RequestForItemController@UsersRequest')->name('user_request');
+    Route::get('dispatch_item', 'RequestForItemController@dispatchitem')->name('dispatch_item');
+    Route::get('showdisitem/{id}', 'RequestForItemController@showdisitem')->name('showdisitem');
+    Route::get('dispatch_to_user/{id}', 'RequestForItemController@dispatchtouser')->name('dispatch_to_user');
+    Route::get('up-rfi-le-one', 'RequestForItemController@uprfi_le_one')->name('up-rfi-le-one');
     Route::get('user_req_status/{id}', 'RequestForItemController@UsersRequestStatus')->name('user_req_status');
     Route::put('user_req_update/{id}', 'RequestForItemController@UsersRequestUpdate')->name('user_req_update');
     Route::get('applyforquotation/{id}', 'RequestForItemController@ApplyForQuotation')->name('applyforquotation');
     Route::post('rfiquotationtomail/{id}', 'RequestForItemController@RfiQuotationToMail')->name('rfiquotationtomail');
+    Route::get('up-rfi-address', 'RequestForItemController@uprfiaddress')->name("up-rfi-address");
     Route::get('receivedQuotation/{id}', 'QuotationReceivedController@ReceivedQuotation')->name('receivedQuotation');
     Route::post('QuotationApproval', 'QuotationReceivedController@QuotationApproval')->name('QuotationApproval');
     Route::get('approval_quotation', 'QuotationReceivedController@ApprovalQuotation')->name('approval_quotation');
@@ -110,8 +120,13 @@ Route::group(['middleware' => ['role:purchase_manager']], function () {
 
 
     Route::get('manager_request', 'RequestForItemController@ManagerRequest')->name('manager_request');
+    Route::get('disable-to-dispatch', 'RequestForItemController@disabletodispatch')->name('disable-to-dispatch');
+    Route::get('showdisbleForquo/{id}', 'RequestForItemController@showdisbleForquo')->name('showdisbleForquo');
     Route::get('check_users_rfi/{id}', 'RequestForItemController@CheckUsersRFI')->name('check_rfi');
     Route::post('/request_for_item/set_warehouse', 'RequestForItemController@SetWareHouse')->name('set_warehouse');
+    Route::get('/managr-apv', 'RequestForItemController@managrapv')->name('managr-apv');
+    Route::get('/remove_reqitem/{id}', 'RequestForItemController@removereqitem')->name('remove_reqitem');
+    Route::post('/filter_dis_quo/{id}', 'RequestForItemController@filterdisquo')->name('filter_dis_quo');
 });
 
 Route::group(['middleware' => ['role:store_admin|purchase_manager|purchase_superadmin|purchase_admin']], function () {
@@ -120,11 +135,38 @@ Route::group(['middleware' => ['role:store_admin|purchase_manager|purchase_super
 });
 
 Route::group(['middleware' => ['role:store_admin']], function () {
-	Route::resource('store_management', 'StoreManagementController');
-	Route::get('view_accepted_po/{id}', 'StoreManagementController@ViewAcceptedPO')->name("view_accepted_po");
-	Route::get('view_grn', 'StoreManagementController@FetchAllGRN')->name("view_grn");
-	Route::get('add_grn', 'StoreManagementController@AddGRN')->name("add_grn");
+Route::resource('store_management', 'StoreManagementController');
+Route::get('view_accepted_po/{id}', 'StoreManagementController@ViewAcceptedPO')->name("view_accepted_po");
+Route::get('view_grn', 'StoreManagementController@FetchAllGRN')->name("view_grn");
+Route::get('add_grn', 'StoreManagementController@AddGRN')->name("add_grn");
+Route::get('upstock/{id}/{ids}', 'StoreManagementController@upstock')->name("upstock");
 });
+Route::post('upwareqty', 'StoreManagementController@upwareqty')->name("upwareqty");
+Route::get('get-ware-details', 'StoreManagementController@getwaredetails')->name("get-ware-details");
+
+
+
+
+/*   Receivings   start   */
+
+Route::get('receiving', 'receivings\ReceivingsController@index')->name('receiving');
+Route::post('get_receiving_item', 'receivings\ReceivingsController@fetchItems')->name('get_receiving_item');
+Route::post('receivings_item_save', 'receivings\ReceivingsController@store')->name('receivings_item_save');
+Route::post('save_receiving_items', 'receivings\ReceivingsController@saveReceivingItems')->name('save_receiving_items');
+
+Route::get('generate_dc', 'receivings\ReceivingsController@generateDC')->name('generate_dc');
+
+// Route::resource('receiving_chalan', 'receivings\chalanController');
+Route::get('/receiving_chalan/{id}','receivings\chalanController@show');
+
+Route::get('manage_transfer', 'receivings\ManagetransferController@index')->name('manage_transfer');
+
+Route::get('session_distroy', 'receivings\ReceivingsController@sessionDistroy')->name('session_distroy');
+Route::post('remove_entry_session', 'receivings\ReceivingsController@remove_entry_session')->name('remove_entry_session');
+Route::get('site_item_req/{id}', 'receivings\ManagetransferController@sitereq')->name('site_item_req');
+/*   Receivings   end    */
+
+
 
 
 /*$cat_id = 01;

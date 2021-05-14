@@ -27,4 +27,14 @@ class item extends Model
     public function items_qty(){
         return $this->belongsTo('App\Model\store_inventory\StoreItem', 'id', 'item_id');
     }
+    public function consum(){
+        return $this->belongsTo('App\itemconsumable', 'cons_id', 'id');
+    }
+
+    public function wonee(){
+        return $this->belongsTo('App\Model\store_inventory\StoreItem', 'id', 'item_id')->where('warehouse_id',1);
+    }
+    public function wtwoo(){
+        return $this->belongsTo('App\Model\store_inventory\StoreItem', 'id', 'item_id')->where('warehouse_id',2);
+    }
 }

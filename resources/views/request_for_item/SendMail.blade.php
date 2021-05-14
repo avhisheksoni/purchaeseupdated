@@ -38,7 +38,7 @@
 	    <div>
 	    		<b>Dear <?php echo $details['name']; ?>,</b><br>
 	        <p>We are requested you to see our requirement and send us to quotation of our requirment</p>
-	        <p>Add your quotation by clicking <a href="{{ route('vendor_form',[ $details['quotion_id'], $details['vendor_id']]) }}" target="blank">here</a></p><br>
+	        <p>Add your quotation by clicking <a href="{{ route('vendor_form',[ $details['quotion_id'], $details['vendor_id'] ,$details['pitemnew'] ]) }}" target="blank">here</a></p><br>
 	        <strong>Thanks & Regards</strong><br>
 	        <strong>Laxyo Energy Group</strong>
 	    </div>

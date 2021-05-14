@@ -82,7 +82,7 @@
             @endif
           </tbody>
         </table>
-        {!! $request_for_items->links() !!}
+        {!! $request_for_items->links()  !!}
       </div>
     </div>
   </div>

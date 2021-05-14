@@ -4,6 +4,9 @@
 <?php
 	$user_id = request()->segment('2');
 ?>
+
+<?php if($ready_to_dispatch == ''){ ?>
+   
 <div class="container-fluid">
   <a href="{{ '/user_request' }}" class="main-title-w3layouts mb-2 float-right"><i class="fa fa-arrow-left"></i>  Back</a>
   <h5 class="main-title-w3layouts mb-2">Select Items</h5>
@@ -22,17 +25,20 @@
         <div class="row">
             <div class="form-group col-md-6">
                 <label>User Name</label>
-                <input class="form-control" value="{{ $mem_details->name }} {{ $mem_details->last_name }}" readonly="">
+                <input class="form-control" value="{{ $name }}" readonly="">
             </div>
             <div class="form-group col-md-6">
                 <label>Email</label>
-                <input class="form-control" value="{{ $mem_details->email }}" readonly="">
+                <input class="form-control" value="{{ $email }}" readonly="">
             </div>
 
         	<div class="col-md-12 mt-2 mb-2">
         		<label>Select WareHouse</label>
+        		@php 
+        		$warehouse = App\Warehouse::all();
+        		@endphp
 	      		<select name="warehouse_id" class="form-control warehouseCLS" id="warehouse">
-	      			<option disabled="" selected="">Select</option>
+	      			<option value="0">Select</option>
 	      			@foreach($warehouse as $wh)
 		      			<option value="{{ $wh->id }}">{{ $wh->name }}</option>
 		      		@endforeach
@@ -45,45 +51,62 @@
 				<table class="table table-border" width="100%" id="userTable">
 					<thead>
 						<tr>
-							<th>#Item Number</th>
+							<th>#</th>
+                            <th>#Item Number</th>
 							<th>#Name</th>
-							<th>#Quantity</th>
+							<th>#R-Quantity</th>
+                            <th>#S-Quantity</th>
 							<th>#Description</th>
+                            <th>#Availability</th>
+                            <th>#Remove</th>
 						</tr>
 					</thead>
 					<tbody id="purchBody">
-						<?php 
-				            $m = 0;
-				            $data = json_decode($requestForItem);
-				            $decoded_data = json_decode($data->requested_data);
-				            foreach($decoded_data as $row){
-				            	$items = $row->item_name;
-				            	$item = explode("|",$items);
-				        ?>
+                        <form action="{{ route('filter_dis_quo',$id)}}" method="post">
+                             @csrf
+						@php $i=1; @endphp
+						@foreach($data as $res)
 						<tr>
-							<td>{{ $item[1] }}</td>
-							<td>{{ $item[0] }}</td>
-							<td>{{ $row->quantity }} <span class="avail-item-msg" id="item-<?php echo str_replace(' ', '', $item[1]); ?>"></span></td>
-							<td>{{ $row->description }}</td>
+                        <td><input type="checkbox" name="chk[]" value="" class="form-control" readonly="" id="{{ "check".$i }}" ></td>
+						 <td><input type="text" name="item_no[]" value="{{ $res->item_no }}" class="form-control item_no" readonly="" id="{{ "item_".$i }}"></td>
+						 <td>{{ $res->item_name }}</td>
+						 <td><input type="number" value="{{ $res->quantity }}" class="form-control" readonly=""></td>
+                          <td><input type="number" name="squantity[]" value="{{ $res->quantity }}" class="form-control sqty" id="{{ "sqty".$i }}"></td>
+						 <td>{{ $res->description }}</td>
+             <?php if(strlen($res->item_no) != 8 ) { ?>
+						 <td><input type="number" id="{{ "mgs".$i++ }}" class="form-control red" value="{{ App\Model\store_inventory\StoreItem::where('item_number','0'.$res->item_no)->get()->sum('quantity') }}" readonly=""></p></td>
+             <?php }else{ ?>
+                 <td><input type="number" id="{{ "mgs".$i++ }}" class="form-control red" value="{{ App\Model\store_inventory\StoreItem::where('item_number', $res->item_no)->get()->sum('quantity') }}" readonly=""></p></td>
+             <?php } ?>
+                          <td> <a class="btn btn-danger" href="{{ route('remove_reqitem',$res->id) }}" >Remove</a></td>
 						</tr>
-						<input type="hidden" name="item_num" value="<?php echo str_replace(' ', '', $item[1]); ?>">
-						<input type="hidden" name="req_qty" value="{{ $row->quantity }}">
-						<?php } ?>
+						 @endforeach
+                         <input type="hidden" name="wahouse" value="" id="wahouse">
+                        
 					</tbody>
 				</table>
 			</div>
         </div>
         <div class="row">
-	    	<div class="col-md-12">
-	    		<div class="p-2 text-center">
-		      		<button class="btn btn-success" id="err-{{ $user_id }}">Approve</button>
-		      		<button class="btn btn-danger">Discard</button>
-	      		</div>
-	      	</div>
-	    </div>
+            <div class="col-md-12">
+              
+                 <input class="btn btn-info" type="submit" value="Set Items" id="chkwar">
+                        </form>
+
+                
+                  </form>
+             
+            </div>
+        </div>
 	  </div>
 	</div>
 </div>
+<?php } else {
+   echo "Ready for Dispatch Also unaviable item send for Purchase";
+
+}
+ ?> 
+
 
 @endsection
 
@@ -96,37 +119,88 @@
 	}
 </style>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
-<!-- search and store data in session -->
 <script>
-<?php 
-    $m = 0;
-    $data = json_decode($requestForItem);
-    $decoded_data = json_decode($data->requested_data);
-    foreach($decoded_data as $row){
-    	$items = $row->item_name;
-    	$item = explode("|",$items);
-?>
-$('document').ready(function(){
-	$('.warehouseCLS').change(function(){
-	    var value = document.getElementById("warehouse").value;
-	    var item_num = "<?php echo str_replace(' ', '', $item[1]); ?>";
-	    var req_qty = "<?php echo $row->quantity; ?>";
-	    if(value != '')
-	    {
-	      var _token = $('input[name="_token"]').val();
-	      $.ajax({
-	        url:"{{ route('set_warehouse') }}",
-	        method:"POST",
-	        data:{warehouse_id:value, item_num:item_num, req_qty:req_qty, _token:_token},
-	        success:function(data){
-	        	if(data !=''){
-	        	   	$('#item-'+item_num).html(data);
-	        		$('#err-<?php echo $user_id; ?>').attr("disabled", true);
-	        	}
-	        }
-	      });
-	    }
-	});  
-});
-<?php } ?>  
+	$('document').ready(function(){
+        $('#warehouse').on('change',function(){
+            var wid = $(this).val();
+            $(".sqty").val('');
+            $("#wahouse").val(wid);
+             var i = 0;
+            $(".item_no").each( function(){
+                var itemid = $(this).attr('id');
+                itid = $('#'+itemid).val();
+                count = itemid.split("_");
+                mgs = "mgs"+count[1];
+                //console.log(mgs);
+            	$.ajax({
+                 type: "GET",
+                 url: "{{ route('up-rfi-le-one') }}",
+                 data: {'itemid':itid,'mgs':mgs,'wid':wid},
+                 success: function(res){
+                    //console.log(res);
+                    mm = res.split("||");
+                    chk = mm[1].split('');
+                    //console.log(chk[3]);
+             $("#"+mm[1]).empty();
+             $("#"+mm[1]).val(mm[0]);
+             if(mm[0] == 0){
+             $("#check"+chk[3]).hide();
+               }else{
+             $("#check"+chk[3]).show();
+               }
+
+                    }
+                      });
+            i++
+            })
+
+        });
+        $(".sqty").on('blur',function(){
+          var userreq = parseInt($(this).val());  
+          var ssqty = $(this).attr('id');
+           spl = ssqty.split('');
+           wareqty =  parseInt($("#mgs"+spl[4]).val());
+           // console.log(ssqty);
+           // console.log(jQuery.type(userreq));
+           if(wareqty >= userreq){
+             true;
+           }else{
+            // alert("not-okk");
+            $("#"+ssqty).val("");
+           }
+
+        });
+
+        $('#approveit').on('click',function(){
+          var pid = $('#impid').val();
+          $.ajax({
+                 type: "GET",
+                 url: "{{ route('managr-apv') }}",
+                 data: {'pid':pid},
+                 success: function(res){
+                   console.log(res);
+                 }
+
+             })
+
+
+        });
+
+        $('#chkwar').on('click',function(){
+            var warid = $('#warehouse').val();
+            //alert(warid);
+            if( warid == "0" ){
+
+               alert("Please select WareHouse before set item");
+               return false;
+
+            }else{
+
+              return true;
+            }
+                 
+        });
+
+	})
 </script>
+

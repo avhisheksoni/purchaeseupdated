@@ -145,6 +145,7 @@
                   <button disabled="" class="btn btn-primary error-w3l-btn px-4">Submit</button>
                 @endif
                 @endpermission
+                <a href="{{route('applyforquotation',$poid)}}" class="btn btn-primary error-w3l-btn px-4">Submit</a>
             </form>
         </div>
     </div>

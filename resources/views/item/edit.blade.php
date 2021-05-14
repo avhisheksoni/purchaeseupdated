@@ -80,7 +80,16 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="form-group col-md-12">
+                    <div class="form-group col-md-6">
+                       <label>Select consume quality</label>
+                        <select name="cons_id" class="form-control">
+                            <option disabled="" selected="">Select Units</option>
+                            @foreach ($itemconsumable as $unit)
+                                <option value="{{ $unit->id }}" @if($unit->id == $item->cons_id) selected @endif>{{ $unit->cat_name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                     <div class="form-group col-md-6">
                         <label>Service Type</label><br>
                         <input type="radio" name="service_type" value="Service" @if("Service" == $item->service_type) checked @endif> Service
                         <input type="radio" name="service_type" value="Supplier" @if("Supplier" == $item->service_type) checked @endif> Supplier

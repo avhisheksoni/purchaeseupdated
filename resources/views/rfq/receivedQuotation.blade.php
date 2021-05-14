@@ -105,10 +105,10 @@
 							  									@endif
 							  								@else
 									  								<span style="margin-left: 20px;">
-									  									<input type="radio" name="manager_status" value="1"> Approve
+									  									<input type="radio" name="manager_status" value="1" id="approveit"> Approve
 									  								</span> 
 								  							@endif
-							  								<input type="hidden" name="quotion_id" value="{{ $row->id }}">
+							  								<input type="hidden" name="quotion_id" value="{{ $row->id }}" id="pqtid">
 							  								<!-- <input type="hidden" name="quote_id" value="{{ request()->segment(2) }}">
 							  								<input type="hidden" name="vender_id" value="{{ $row->id }}"> -->
 							  							</td>
@@ -249,6 +249,11 @@ $(document).ready(function() {
 	    });
 	 	} }
 	});
+  $("#approveit").on('click',function(){
+
+    //alert($("#pqtid").val());
+
+  })
 });
 </script>
 <?php } ?>

@@ -1,5 +1,4 @@
 @extends('../layouts.sbadmin2')
-
 @section('content')
 <div class="container-fluid">
     <a href="{{ '/approval_quotation' }}" class="main-title-w3layouts mb-2 float-right"><i class="fa fa-arrow-left"></i>  Back</a>
@@ -55,6 +54,7 @@
 										         Register No. : 0123456789 <br />
 										         GST No. : lax1234<br />
 										         Date : '.date("d-m-Y H:i:s").'<br />
+										         Delivery At : '.$data[0]->rfuser->address->description.'<br />
 										        </td>
 										      </tr>
 										    </table>

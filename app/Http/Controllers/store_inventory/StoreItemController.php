@@ -9,6 +9,7 @@ use App\Department;
 use App\item;
 use App\item_category;
 use App\Warehouse;
+use App\purchase_stored_item;
 use Illuminate\Support\Facades\Validator;
 use Auth;
 use DB;
@@ -29,7 +30,9 @@ class StoreItemController extends Controller
     {
         $warehouse = Warehouse::all();
         $items =item::with(['brand_name','department_name','category','unit','items_qty', 'items_qty.store_warehouse'])->get();
-        return view('store_item.index',compact('items','warehouse'));
+        $war1 =  item::with(['brand_name','department_name','category','unit','items_qty', 'wonee'])->has('wonee')->get();//wonee
+        $war2 =  item::with(['brand_name','department_name','category','unit','items_qty', 'wtwoo'])->has('wtwoo')->get();//wtwoo
+        return view('store_item.index',compact('items','warehouse','war1','war2'));
     }
 
     /**

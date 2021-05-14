@@ -42,57 +42,43 @@
                     </div>
                 </div>
                 <table id="invoice-item-table" class="table table-bordered">
-			            <tr>
-			              <th>S.No</th>
-			              <th>Item Name</th>
-			              <th>Quantity</th>
-			              <th>Description</th>
-			              <th></th>
-			            </tr>
-			            <?php 
-				            $m = 0; 
-                   // dd($requested);
-				            foreach($requested as $rows){
-				            	$value = json_decode($rows->requested_data);
-				            	foreach ($value as $row) {
-				            		$m = $m + 1;
-				          ?>
-			            <tr>
-			              <td>
-			              	<span id="sr_no">{{ $m }}</span>
-			              </td>
-			              <td>
-			              	<input type="text" name="item_name[]" id="item_name{{ $m }}" class="form-control input-sm" value="{{ $row->item_name }}" readonly />
-			              </td>
-			              <td>
-			              	<div class="row">
+                  <tr>
+                    <th>S.No</th>
+                    <th>Item Name</th>
+                    <th>Quantity</th>
+                    <th>Description</th>
+                    <th></th>
+                  </tr>
+                  <?php
+                        $m=1; 
+                    foreach ($quo as $res) { ?>
+                  
+                  <tr>
+                    <td>
+                      <span id="sr_no"><?= $m++ ?></span>
+                    </td>
+                    <td>
+                      <input type="text" name="item_name[]" id="item_name" class="form-control input-sm" value="{{ $res->item_name }}" readonly />
+                    </td>
+                    <td>
+                      <div class="row">
                         <div class="col-md-8">
-                          <input type="number" name="quantity[]" id="quantity{{ $m }}" data-srno="{{ $m }}" class="form-control input-sm quantity" value="{{ $row->quantity }}" readonly />
+                          <input type="number" name="quantity[]" id="quantity" data-srno="" class="form-control input-sm quantity" value="{{ $res->quantity }}" readonly />
                         </div>
-                        <div class="col-md-4">
-                          <?php 
-                            foreach($unit as $rows){
-                              $uid = $row->unit_id;
-                              $unit_id = $rows->id;
-                              if($uid == $unit_id){
-                          ?>
-                            <input type="text" name="unit[]" id="unit{{ $m }}" class="form-control input-sm" value="{{ $rows->name }}" readonly />
-                          <?php
-                              }
-                            }
-                          ?>
-                        </div>
+                        {{-- <div class="col-md-4">
+                            <input type="text" name="unit[]" id="unit" class="form-control input-sm" value="" readonly />
+                        </div> --}}
                       </div>
-			              </td>
-			              <td>
-			              	<textarea name="description[]" id="description{{ $m }}" data-srno="{{ $m }}" class="form-control input-sm number_only description" readonly >{{ $row->description }}</textarea>
-			              </td>
-			              <td></td>
-			            </tr>
-			            <?php } } ?>
-			          </table>
-			          <input type="hidden" name="user_id" value="{{ $row->user_id }}" />
-			          <input type="hidden" name="req_user_table_id" value="{{ $requested[0]->id }}" />
+                    </td>
+                    <td>
+                      <textarea name="description[]" id="description" data-srno="" class="form-control input-sm number_only description" readonly >{{ $res->description }}</textarea>
+                    </td>
+                    <td></td>
+                  </tr>
+                 <?php } ?>
+                </table>
+			          <input type="hidden" name="user_id" value="" />
+			          <input type="hidden" name="req_user_table_id" value="" />
                 <!-- Modal -->
                   <div class="modal fade" id="myModal" role="dialog">
                     <div class="modal-dialog">
@@ -103,7 +89,7 @@
                           <button type="button" class="close modalCloss" data-dismiss="modal">&times;</button>
                         </div>
                         <div class="modal-body">
-                          <textarea name="discardReason" id="discardReason" class="form-control input-sm number_only discardReason" placeholder="Enter Reason.. Why you discard ?">@if($rows->discardReason != null) {{ $rows->discardReason->level2_discard }} @endif</textarea>
+                          <textarea name="discardReason" id="discardReason" class="form-control input-sm number_only discardReason" placeholder="Enter Reason.. Why you discard ?"></textarea>
                         </div>
                         <div class="modal-footer">
                           <button type="button" class="btn btn-default modalCloss" data-dismiss="modal">Close</button>

@@ -16,7 +16,7 @@
 
 				<ul class="nav nav-tabs" id="myTab" role="tablist">
 				  <li class="nav-item" style="width: 50%">
-				    <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true"><b>RFI Sended Quotations</b></a>
+				    <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true"><b>RFI Send Quotations</b></a>
 				  </li>
 				  <li class="nav-item" style="width: 50%">
 				    <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false"><b>RFI Received Quotations</b></a>
@@ -78,7 +78,7 @@
 		            </tr>
 		          </thead>
 		          <tbody>
-		          		<?php //dd($data[0]['vendors_mail_items']->email); ?>
+		          		
 		          			<?php 
 		          				if (!empty($data)){
 				              	$n = 1;
@@ -88,10 +88,10 @@
 			              <tr>
 			                <td>{{ $n++ }}</td>
 			                <td>{{ $rows->quotation_id }}</td>
-			                <td>
+			               {{--  <td>
 			                	{{ count(json_decode($rows['vendors_mail_items']->email)) }}
-			                </td>
-			                <td>{{ count(json_decode($rows['vendors_mail_items']->item_list)) }}</td>
+			                </td> --}}
+			                {{-- <td>{{ count(json_decode($rows['vendors_mail_items']->item_list)) }}</td> --}}
 			                <!-- <td>
 			                	@if($rows->manager_status == 0)
 			                		<span style=" color:#ff9a00 ; font-weight: bold">Pending</span>

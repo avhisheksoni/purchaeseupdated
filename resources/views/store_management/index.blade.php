@@ -1,5 +1,4 @@
 @extends('../layouts.sbadmin2')
-
 @section('content')
 <!-- Begin Page Content -->
 <div class="container-fluid">

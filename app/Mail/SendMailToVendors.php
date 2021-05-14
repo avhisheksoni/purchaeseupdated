@@ -18,7 +18,8 @@ class SendMailToVendors extends Mailable
      */
     public function __construct($details)
     {
-    		$pdf = $details['pdf'];
+
+    	$pdf = $details['pdf'];
         $this->details = $details;
         $this->pdf = base64_encode($pdf);
     }

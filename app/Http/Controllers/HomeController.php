@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\User;
 use App\Member;
 use Auth;
+use Session;
+use App\EmpMast;
 
 class HomeController extends Controller
 {
@@ -25,8 +27,9 @@ class HomeController extends Controller
      * @return \Illuminate\Contracts\Support\Renderable
      */
     public function index()
-    {        
+    {
     	$data = User::find(Auth::id());
+        // return $data;
 		$user_id = $data->id;
 		foreach($data->roles as $datas){
 			if($datas->name =='purchase_superadmin' || $datas->name =='purchase_admin' || $datas->name =='purchase_manager' || $datas->name =='purchase_user')
@@ -34,7 +37,12 @@ class HomeController extends Controller
 					$role_id = $datas->id;
 					Member::where('user_id', $user_id)->update(['role_id'=> $role_id]);
 			}
-		} 
+		}
+
+        $user  = EmpMast::where('user_id', Auth::id())->first();
+        // return $user;
+        Session::put('avatar', $user->emp_avatar);
+
         return view('home');      
     }
     public function check()

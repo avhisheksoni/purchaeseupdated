@@ -1,5 +1,4 @@
 @extends('../layouts.sbadmin2')
-
 @section('content')
 <div class="container-fluid">
     <a href="{{ '/store_management' }}" class="main-title-w3layouts mb-2 float-right"><i class="fa fa-arrow-left"></i>  Back</a>
@@ -44,11 +43,14 @@
 						$rows = $data[0];
 				        $rowss = json_decode($rows['QuotationReceived']->items);
 						foreach($rowss as $value){
-				        	//dd($value);
+				        //dd($value);
 			        		$m = $m + 1;
 			        		$sum_item_actual_amount += $value->item_actual_amount;
 							$item_tax_amount += $value->item_tax1_amount;
 							$totalAmount += $value->item_total_amount;
+							$iqty = $value->item_name."||".$value->item_quantity;
+
+							
 					?>
 					<tr>
 					    <td>{{ $m }}</td>
@@ -57,7 +59,7 @@
 					    <td>Rs. {{ $value->item_price }} + {{ $value->item_tax1_rate }}%</td>
 					    <td>Rs. {{ $value->item_total_amount }}</td>
 					    <td>
-					    	<a class="btn btn-primary" href="">Accept</a>
+					    	<a class="btn btn-primary" href="{{ route('upstock',[$iqty,$pritem])}}">Accept</a>
 					    	<a class="btn btn-danger" href="">Pending</a>
 					    </td>
 					</tr>
@@ -204,5 +206,6 @@ $(document).ready(function() {
       last_valid_selection = $(this).val();
     }
   });
+
 });
 </script>

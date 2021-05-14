@@ -57,9 +57,9 @@
 											    </thead>
 											    <tbody>';
                 							$m = 0;
-											        foreach($requested as $rows){
-											        	$value = json_decode($rows->item_list);
-											        	foreach ($value as $row) {
+											        foreach($pqitems as $row){
+											        	//$value = json_decode($rows->item_list);
+											        	//foreach ($value as $row) {
 											        		$m = $m + 1;
 										    $table .='<tr>
 													    <td>'.$m.'</td>
@@ -67,7 +67,7 @@
 													    <td>'.$row->quantity.'</td>
 													    <td>'.$row->description.'</td>
 													  </tr>';
-														 } } 
+														 }// } 
 												$table .='</tbody>
 												</table>
 									   	</td>

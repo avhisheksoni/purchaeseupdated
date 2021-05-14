@@ -9,6 +9,7 @@ use App\Member;
 use App\RfiUsers;
 use App\RfiManager;
 use App\RfiDiscardReason;
+use App\prch_itemwise_requs;
 
 class LevelOne extends Controller
 {
@@ -97,7 +98,8 @@ class LevelOne extends Controller
 
 	  public function LevelOneApproval($id){
 	  		$data = RfiUsers::with('discardReason')->where('id',$id)->get();
-	  		$role = $data[0]->requested_role;
+            $quo = prch_itemwise_requs::where(['prch_rfi_users_id'=>$id,'ready_to_dispatch'=>0,'dispatch_status' =>0])->get();
+	  		 $role = $data[0]->requested_role;
             $unit = unitofmeasurement::get();
 	  		if($role == 'Manager'){
 	  			$status = 0;
@@ -105,10 +107,11 @@ class LevelOne extends Controller
 	  			$status = 1;
 	  		}
 	  		$requested = RfiUsers::where('id',$id)->where('requested_role',$role)->where('manager_status',$status)->get();
-	  		return view('level_one.edit_levelone_approval',compact('requested','unit'));
+	  		return view('level_one.edit_levelone_approval',compact('requested','unit','quo'));
 	  }
 
 	  public function UpdateLevelOneApproval(Request $request, $id){
+        //return $id;
 	  		$request->validate([
             'status' => 'required'
         ]);
@@ -124,6 +127,7 @@ class LevelOne extends Controller
             RfiDiscardReason::create($reason);
         }
         RfiUsers::where('id',$id)->update(['level1_status'=> $status]);
+        prch_itemwise_requs::where(['prch_rfi_users_id'=>$id,'ready_to_dispatch'=>3])->update(['level1_status'=> $status]);
         return redirect()->route('manager_approval')->with('success','Your status has been updated');
 	  }
 }

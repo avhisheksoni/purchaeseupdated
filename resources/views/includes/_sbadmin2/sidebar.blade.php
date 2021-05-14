@@ -2,20 +2,29 @@
 <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
   <!-- Sidebar - Brand -->
-  <a class="sidebar-brand d-flex align-items-center justify-content-center" href="http://laxyo.org/">
-    <div class="sidebar-brand-icon rotate-n-15" style="transform: rotate(3deg)">
-      <img class="img-profile rounded-circle" src="http://www.laxyo.com/images/favicon.png" style="width: 40px; ">
+  <a class="sidebar-brand d-flex align-items-center justify-content-center" href="https://laxyo.org/" style="background-color: #dbf4fd">
+    <div class="sidebar-brand-icon rotate-n-15" style="transform: rotate(1deg); ">
+      <img class="img-profile " src="https://www.laxyo.org/images/logos/logo.png" height="25">
     </div>
-    <div class="sidebar-brand-text mx-3">Laxyo <sup>ERP</sup></div>
+    <!-- <div class="sidebar-brand-text mx-3"><sup>ERP</sup></div> -->
   </a>
-
+  <li class="nav-item active" style="background-color: #dbf4fd">
+    
+      @php $avatar = 'https://hrms.laxyo.org/storage/'.trim(Session::get('avatar'), 'public'); @endphp
+      <div class="app-sidebar__user"><img class="app-sidebar__user-avatar" src="{{$avatar}}" alt="User Image" width="100" height="100">
+    <div>
+      <span style="margin-right: 10px; font-family: bold; font-size: 15px; color: #404040;">{{ ucwords(auth()->user()->name) }}
+      </span>
+    </div>
+  </div>
+  </li>
   <!-- Divider -->
   <hr class="sidebar-divider my-0">
 
   <!-- Nav Item - Dashboard -->
-  <li class="nav-item active">
+  <li class="nav-item active" style="background-color: #dbf4fd; color: #404040">
     <a class="nav-link" href="{{'/home'}}">
-      <i class="fas fa-fw fa-tachometer-alt"></i>
+      <i class="fas fa-fw fa-tachometer-alt" style="color: #404040"></i>
       <span>Dashboard</span></a>
   </li>
 
@@ -23,7 +32,7 @@
   <hr class="sidebar-divider">
 
   <!-- Heading -->
-  <div class="sidebar-heading">
+  <div class="sidebar-heading" style="color: #404040">
     Interface
   </div>
 
@@ -57,7 +66,7 @@
   
   <li class="nav-item">
     <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
-      <i class="fas fa-fw fa-cog"></i>
+      <i class="fas fa-fw fa-cog" ></i>
       <span>Vendors</span>
     </a>
     <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
@@ -147,11 +156,21 @@
       <i class="fas fa-fw fa-chart-area"></i>
       <span>RFI by Users</span></a>
   </li>
+  <li class="nav-item">
+    <a class="nav-link" href="{{ route('dispatch_item') }}">
+      <i class="fas fa-fw fa-chart-area"></i>
+      <span>Ready to Dispatch</span></a>
+  </li>
 
   <li class="nav-item">
     <a class="nav-link" href="{{ route('manager_request') }}">
       <i class="fas fa-fw fa-chart-area"></i>
       <span>Request For Item</span></a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="{{ route('disable-to-dispatch') }}">
+      <i class="fas fa-fw fa-chart-area"></i>
+      <span>Unavailable Item</span></a>
   </li>
 
   <!-- <li class="nav-item">
@@ -204,8 +223,8 @@
 	@role("purchase_user")
 	<li class="nav-item">
     <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
-      <i class="fas fa-fw fa-cog"></i>
-      <span>Request For Items (RFI)</span>
+      <i class="fas fa-fw fa-cog" style="color: #404040"></i>
+      <span style="color: #404040">Request For Items (RFI)</span>
     </a>
     <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
       <div class="bg-white py-2 collapse-inner rounded">
@@ -217,23 +236,39 @@
 	@endrole
 	
 	@role("store_admin")
-  <li class="nav-item">
+  <li class="nav-item admin_css">
     <a class="nav-link" href="{{ route('store_item.index') }}">
       <i class="fas fa-fw fa-shopping-cart"></i>
-      <span>Items</span>
+      <span class="admin_css">Items</span>
     </a>
   </li>
   
 	<li class="nav-item">
     <a class="nav-link" href="{{ route('store_management.index') }}">
-      <i class="fas fa-fw fa-chart-area"></i>
-      <span>PO Received</span></a>
+      <i class="fas fa-fw fa-chart-area admin_css"></i>
+      <span class="admin_css">PO Received</span></a>
+  </li>
+    <li class="nav-item">
+    <a class="nav-link" href="{{ route('item_of_stock') }}">
+      <i class="fas fa-fw fa-chart-area admin_css"></i>
+      <span class="admin_css">Your Stock</span></a>
+  </li>
+   <li class="nav-item">
+    <a class="nav-link" href="{{ route('un_item_of_stock') }}">
+      <i class="fas fa-fw fa-chart-area admin_css"></i>
+      <span class="admin_css">Req Item unable</span></a>
   </li>
 
   <li class="nav-item">
     <a class="nav-link" href="{{ route('view_grn') }}">
       <i class="fas fa-fw fa-chart-area"></i>
-      <span>Generate GRN</span></a>
+      <span class="admin_css">Generate GRN</span></a>
+  </li>
+
+  <li class="nav-item">
+    <a class="nav-link" href="{{ route('receiving') }}">
+      <i class="fas fa-fw fa-chart-area"></i>
+      <span class="admin_css">Stock Transfer</span></a>
   </li>
 	@endrole
 
@@ -266,4 +301,38 @@
   </div>
 
 </ul>
+<style type="text/css">
+
+.app-sidebar__user {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    margin-bottom: 20px;
+    color: #fff;
+}
+
+img.app-sidebar__user-avatar {
+    border-radius: 50% !important;
+    margin-right: 15px;
+}
+
+.toggled .sidebar-brand img {
+    width: 102%;
+    height: 1%;
+}
+
+.toggled img.app-sidebar__user-avatar {
+    width: 97%;
+    height: 1%;
+    /* margin-right: 29%; */
+}
+.bg-gradient-primary {
+  background-color: #dbf4fd;
+}
+.sidebar-dark .nav-item.active .nav-link, .admin_css{
+  color: #404040;
+}
+
+</style>
+
 <!-- End of Sidebar -->

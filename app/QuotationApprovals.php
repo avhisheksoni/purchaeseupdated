@@ -23,4 +23,14 @@ class QuotationApprovals extends Model
     public function rfi_status(){
         return $this->belongsTo("App\PO_SendToVendors", "rfi_id", "approval_quotation_id");
     }
+    public function rfuser(){
+        return $this->belongsTo("App\RfiUsers", "rfi_id", "id");
+    }
+    public function prchitemres(){
+        return $this->belongsTo("App\prch_itemwise_requs", "rfi_id", "prch_rfi_users_id");
+    }
+
+    // public function wareous(){
+    //     return $this->hasOneThrough("App\Warehouse", "App\QuotationApprovals",'rfi_id','address_wareh_id','id','id');
+    // }
 }

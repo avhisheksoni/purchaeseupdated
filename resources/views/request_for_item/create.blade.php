@@ -1,5 +1,4 @@
 @extends('../layouts.sbadmin2')
-
 @section('content')
 <div class="container-fluid">
     <!-- <a href="{{ '/request_for_item' }}" class="main-title-w3layouts mb-2 float-right"><i class="fa fa-arrow-left"></i>  Back</a> -->
@@ -79,8 +78,9 @@
 </style>
 
 <script type="text/javascript" charset="utf8" src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.7.1.min.js"></script>
-<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script> -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
 <script>
 $(document).ready(function(){
   var final_total_amt = $('#final_total_amt').text();
@@ -114,6 +114,7 @@ $(document).ready(function(){
 
   $(document).on('click', '#add_row', function(){
     count++;
+    //alert("wrq");
     $('#total_item').val(count);
     var html_code = '';
     html_code += '<tr id="row_id_'+count+'">';

@@ -14,6 +14,7 @@ use App\vendor;
 use App\QuotationApprovals;
 use App\QuotationApprovedById;
 use App\PO_SendToVendors;
+use App\prch_itemwise_requs;
 use App\Notifications\RFQ_Notification;
 use App\Mail\PO_SandsToVendor;
 
@@ -33,6 +34,7 @@ class QuotationReceivedController extends Controller
     {	
     		$rfq = DB::table('prch_vendors_mail_sends')->distinct(['quotion_sent_id'])->paginate(10);
     		$data = QuotationApprovals::distinct(['quotation_id'])->get();
+        //dd($rfq);
 
         return view('rfq.index',compact('rfq','vendor','data'))->with('i', (request()->input('page', 1) - 1) * 10);
     }
@@ -45,22 +47,29 @@ class QuotationReceivedController extends Controller
      */
     public function show(VendorsMailSend $VendorsMailSend, $id)
     {
+       //return $id;
     		$requested = VendorsMailSend::Where('id',$id)->get();
+        $requestt = VendorsMailSend::Where('id',$id)->first();
+        $pqitems = prch_itemwise_requs::where('prch_rfi_users_id',$requestt->quotion_sent_id)->where('unavaible_in_wh',1)->get();
     		$vid = json_decode($requested[0]->email);
     		foreach ($vid as $key) {
     				$vendor[] = vendor::where('id',$key)->get();
         }
-        return view('rfq.show',compact('requested','vendor'));
+        
+        return view('rfq.show',compact('requested','vendor','pqitems'));
     }
 
     public function ReceivedQuotation($id){
     		$vendor = QuotationApprovals::with('QuotationReceived.vendorsDetail')->where('rfi_id',$id)->get();
 
+        //dd($vendor);
+
 				return view('rfq.receivedQuotation',compact('data','vendor','approval'));
     }
 
-    public function VendorRFQFormData($id, $vid){
-    		return view('rfq.vendor_form');
+    public function VendorRFQFormData($id, $vid,$pidnew){
+      //return $pidnew;
+    		return view('rfq.vendor_form',compact('pidnew'));
     }
 
     public function VendorRFQFormDataStore(Request $request){
@@ -70,7 +79,7 @@ class QuotationReceivedController extends Controller
 		  	 	while($x < $count){
 		  	 		if($request->item_name[$x] !=''){
 						  $quotationItemsTable[] = array(
-					 				'item_name' => $request->item_name[$x],
+					 				'item_name' => $request->item_name[$x]."|".$request->item_no[$x],
 			            'item_quantity' => $request->item_quantity[$x],
 			            'item_price' => $request->item_price[$x],
 			            'item_actual_amount' => $request->item_actual_amount[$x],
@@ -166,8 +175,9 @@ class QuotationReceivedController extends Controller
     }
 
     public function ApprovalQuotationItems($id){
-    		$data = QuotationApprovals::with('QuotationReceived.vendorsDetail')->where('id',$id)->get();
-
+      //return $id;
+    		$data = QuotationApprovals::with(['QuotationReceived.vendorsDetail','rfuser.address'])->where('id',$id)->get();
+        //dd($data[0]);
     		return view('rfq.approvalQuotation_item',compact('data','vendor','manager_approved','vid'));
     }
 
@@ -185,6 +195,7 @@ class QuotationReceivedController extends Controller
   					'approval_quotation_id' => $request->approval_quotation_id, 
   					'po_id'	=>	'#PO'.str_pad($nextval, 4, '0', STR_PAD_LEFT),
   			);
+        // dd($data); avhi
   			$datas = PO_SendToVendors::create($data);
   			$vendor = vendor::find($id);
   			$details = array(

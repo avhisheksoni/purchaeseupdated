@@ -68,14 +68,13 @@ body {font-family: Arial;}
 
 
       <div class="tab">
-        <button class="tablinks active" onclick="openCity(event, 'All')">All</button>
+        <button class="tablinks active" onclick="openCity(this.value)" value="all" id='all'>All</button>
         @if(!empty($warehouse))
           @foreach ($warehouse as $wh)
-            <button class="tablinks" onclick="openCity(event, '{{ $wh->id }}')">{{ $wh->name }}</button>
+            <button class="tablinks wareh" onclick="openCity(this.value)" value="{{ $wh->id }}" id="{{ $wh->name }}">{{ $wh->name }}</button>
           @endforeach
         @endif
       </div>
-
 
 
 
@@ -93,8 +92,36 @@ body {font-family: Arial;}
 <script type="text/javascript" charset="utf8" src="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.0/jquery.dataTables.min.js"></script>
 <script type="text/javascript" src="https://ajax.microsoft.com/ajax/jquery.validate/1.7/jquery.validate.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.min.js"></script>
-
-<script>
+<script type="text/javascript">
+    function openCity(value){
+     
+     if(value == 'all'){
+         $("#wh-Indore").hide();
+         $("#wh-Ratlam").hide();
+         $("#All").show();
+         $("#Ratlam").removeClass('active');
+         $("#Indore").removeClass('active');
+         $("#all").addClass('active');
+     }else if(value == 1){
+         $("#All").hide();
+         $("#wh-Ratlam").hide();
+         $("#wh-Indore").show();
+         $("#all").removeClass('active');
+         $("#Ratlam").removeClass('active');
+         $("Indore").addClass('active');
+    }else if(value == 2){
+         $("#All").hide();
+         $("#wh-Indore").hide();
+         $("#wh-Ratlam").show();
+         $("#all").removeClass('active');
+         $("Indore").removeClass('active');
+         $("Ratlam").addClass('active');
+    }else{
+        $("#All").show();
+    }
+  }
+</script>
+{{-- <script>
 function openCity(evt, cityName) {
   var i, tabcontent, tablinks;
   if(cityName !== "All"){
@@ -165,5 +192,6 @@ function openCity(evt, cityName) {
 
   @endforeach
 @endif
-</script>
+</script> --}}
+
 @endsection

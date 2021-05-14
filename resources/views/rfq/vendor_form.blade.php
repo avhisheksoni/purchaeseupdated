@@ -120,8 +120,11 @@
 							            </tr>
 
 							            <?php 
+
 								            $m = 0; 
-								            foreach($items as $row){
+                            $itemnew =  App\prch_itemwise_requs::where('prch_rfi_users_id',$pidnew)->where('ready_to_dispatch','<>',1)->get();
+                              //dd($itemnew);
+								            foreach($itemnew as $row){
 								            	$m = $m + 1;
 							            ?>
 							            <tr>
@@ -133,6 +136,7 @@
 							              <td><input type="text" name="item_tax1_rate[]" id="order_item_tax1_rate{{$m}}" data-srno="{{$m}}" class="form-control input-sm number_only order_item_tax1_rate" /></td>
 							              <td><input type="text" name="item_tax1_amount[]" id="order_item_tax1_amount{{$m}}" data-srno="{{$m}}" readonly class="form-control input-sm order_item_tax1_amount" /></td>
 							              <td><input type="text" name="item_total_amount[]" id="order_item_final_amount{{$m}}" data-srno="{{$m}}" readonly class="form-control input-sm order_item_final_amount" /></td>
+                              <td><input type="hidden" name="item_no[]" id="item_no{{$m}}" data-srno="{{$m}}" value="{{ $row->item_no }}" readonly class="form-control input-sm item_no" /></td>
 							            </tr>
 							            <?php } ?>
 							          </table>

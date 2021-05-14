@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\RfiUsers;
 use App\RfiDiscardReason;
 use App\unitofmeasurement;
+use App\prch_itemwise_requs;
 
 class LevelTwo extends Controller
 {
@@ -94,6 +95,7 @@ class LevelTwo extends Controller
     public function EditLevelTwoApproval($id)
     {
 	  		$data = RfiUsers::with('discardReason')->where('id',$id)->get();
+            $quo = prch_itemwise_requs::where(['prch_rfi_users_id'=>$id,'ready_to_dispatch'=>0,'dispatch_status' =>0])->get();
 	  		$role = $data[0]->requested_role;
             $unit = unitofmeasurement::get();
 	  		if($role == 'Manager'){
@@ -102,7 +104,8 @@ class LevelTwo extends Controller
 	  			$status = 1;
 	  		}
 	  		$requested = RfiUsers::where('id',$id)->where('requested_role',$role)->where('manager_status',$status)->get();
-	  		return view('level_two.edit_leveltwo_approval',compact('requested','unit'));
+            //dd($requested);
+	  		return view('level_two.edit_leveltwo_approval',compact('requested','unit','quo'));
 	}
 
 	public function UpdateLevelTwoApproval(Request $request, $id) 
@@ -111,7 +114,7 @@ class LevelTwo extends Controller
             'status' => 'required'
         ]);
         $status = $request->status;
-        //dd($status);
+       // dd($status); Avhishek
         if($status == 2){
             $request->validate([
                 'discardReason' => 'required'
@@ -123,6 +126,7 @@ class LevelTwo extends Controller
             RfiDiscardReason::create($reason);
         }
         RfiUsers::where('id',$id)->update(['level2_status'=> $status]);
+        prch_itemwise_requs::where(['prch_rfi_users_id'=>$id,'ready_to_dispatch'=>3])->update(['level2_status'=> $status]);
         return redirect()->route('items_approval')->with('success','Your status has been updated');
 	}
 }

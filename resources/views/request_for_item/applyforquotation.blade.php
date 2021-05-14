@@ -15,7 +15,19 @@
             <form action="{{ route('rfiquotationtomail',$requested[0]->id) }}" method="post">
                 @csrf
                 <div class="row">
-                	<div class="form-group col-md-12">
+                	<div class="form-group col-md-5">
+                		@php 
+                		    $ware = App\Warehouse::all();
+                		@endphp
+                		<select name="warehouse_id" class="form-control" id="address">
+                			<option value="">Select--Address</option>
+                			@foreach($ware as $war)
+                			<option value="{{ $war->id }}">{{ $war->description }}</option>
+                			@endforeach
+                		</select>
+                		<input type="hidden" name="itemid" value="{{ $requested[0]->id }}" id="itemid" > 	
+                	</div>
+                	<div class="form-group col-md-7">
                 		<button type="submit" name="submit" class="btn btn-primary error-w3l-btn px-4 float-right">Submit</button>
                 	</div>
                 </div>
@@ -64,20 +76,17 @@
 								      </tr>
 								    </thead>
 								    <tbody>';
-    							$m = 0;
-								        foreach($requested as $rows){
-								        	$value = json_decode($rows->requested_data);
-								        	foreach ($value as $row) {
-								        		foreach ($unit as $units) {
-								        			if($units->id == $row->unit_id){
-								        			$m = $m + 1;
+    							$m = 1;
+								        foreach($quo as $rows){
+								        
 							    $table .='<tr>
-										    <td>'.$m.'</td>
-										    <td>'.$row->item_name.'</td>
-										    <td>'.$row->quantity.' '.$units->name.'</td>
-										    <td>'.$row->description.'</td>
+										    <td>'.$m++.'</td>
+										    <td>'.$rows->item_name.'</td>
+										    <td>'.$rows->quantity.'-'.App\unitofmeasurement::find($rows->unit_id)->name.'</td>
+										    <td>'.$rows->description.'</td>
 										  </tr>';
-											} } } }
+
+											} 
 									$table .='</tbody>
 								</table>
 						   	</td>
@@ -104,5 +113,20 @@ $(document).ready(function() {
       last_valid_selection = $(this).val();
     }
   });
+  $("#address").on('change',function(){
+    var warid = $(this).val();
+    var itemid = $('#itemid').val();
+    //alert(itemid);
+     $.ajax({
+                 type: "GET",
+                 url: "{{ route('up-rfi-address') }}",
+                 data: {'id':warid,'itemid':itemid },
+                 success: function(res){
+                 console.log(res);
+                    }
+                      });
+
+  });
+
 });
 </script>
