@@ -151,7 +151,7 @@ $(document).ready(function(){
                  },
             success: function(res){
 
-              //window.location.href = "receivings";
+              window.location.href = "receiving";
               
               
             }

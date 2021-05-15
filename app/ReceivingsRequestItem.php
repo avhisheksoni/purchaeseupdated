@@ -12,7 +12,7 @@ class ReceivingsRequestItem extends Model
 
    
    public function itemname(){
-    	return $this->belongsTo('App\item', 'item_key');
+    	return $this->belongsTo('App\item', 'item_id');
     }
     
    

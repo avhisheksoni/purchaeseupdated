@@ -19,7 +19,7 @@
                 <br>
                 <div class="row">
                     <div class="col-md-4">
-                        <a href="{{ route('receivings-session.destroy') }}" id="destroy_receivings"><span class="label label-primary" title="Click to Close Request"> {{ strtoupper(session()->get('receiving_request')['requested_to']->name) }} &nbsp; <i class="fa fa-1x fa-long-arrow-right" aria-hidden="true"></i>&nbsp; {{ strtoupper(session()->get('receiving_request')['requested_by']->name) }} &nbsp; <span style="color: white"><i class="fa fa-window-close" aria-hidden="true"></i></span></span></a>
+                        <a href="#" id="destroy_receivings"><span class="label label-primary" title="Click to Close Request"> {{ strtoupper(session()->get('receiving_request')['ware_name']) }} &nbsp; <i class="fa fa-1x fa-long-arrow-right" aria-hidden="true"></i>&nbsp; {{ strtoupper(session()->get('receiving_request')['site_name']) }} &nbsp; <span style="color: white"><i class="fa fa-window-close" aria-hidden="true"></i></span></span></a>
                     </div>
                 </div>
                 @endif
@@ -76,7 +76,7 @@
                         <select name="destination" id="destination" class="form-control" >
                         @foreach($sites as $site)
                           @if(session()->has('receiving_session'))
-                           <option value="{{$site->id}}" >{{$site->job_describe.' || '.$site->job_code}}</option>
+                           <option value="{{$site->id}}" {{ session()->get('receiving_request')['requested_by'] == $site->id ? 'selected' : ''}}>{{$site->job_describe.' || '.$site->job_code}}</option>
                           @else
                           	<option value="{{$site->id}}">{{$site->job_describe.' || '.$site->job_code}}</option>
                           @endif

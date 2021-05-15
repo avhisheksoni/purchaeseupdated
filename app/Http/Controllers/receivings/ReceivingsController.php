@@ -201,15 +201,15 @@ class ReceivingsController extends Controller
     public function generateDC(Request $request)
     {
       $req_id = $request->request_id;
-      $rec_req = ReceivingsRequest::with('req_items')->where('id', $req_id)->first();
+      $rec_req = ReceivingsRequest::with('req_items','sitename','warename')->where('id', $req_id)->first();
 
       $receiving_request = [];
 
         foreach ($rec_req['req_items'] as $index) {
-
           $item_name = item::with('unit')->where('id', $index->item_id)->first();
-          $actual_qty = purchase_stored_item::where("item_id",$index->item_id)->where('warehouse_id', $index->warehouse_id)->first();
-          dd($actual_qty);
+
+          $actual_qty = purchase_stored_item::where("item_id",$index->item_id)->where('warehouse_id', $rec_req->warehouse_id)->first();
+          //dd($actual_qty);
 
           $item[$index->item_id] = [
               'item_id'         => $index->item_id,
@@ -220,20 +220,17 @@ class ReceivingsController extends Controller
               'qty'             => $index->qty,
             ];
         }
-      dd($item);
 
-    $request_location = $user->isAbleTo('stock-maintainance') == false ? 1 : $items->requested_by;
-
-    $receiving_request['requested_by']  = Shop::where('id', $request_location)->select('id', 'name')->first();
-
-    $receiving_request['request_id']  = $items->id;
-    $receiving_request['requested_to']  = Shop::where('id', get_shop_id_name()->id)->select('id', 'name')->first();
+    $receiving_request['requested_by']  = $rec_req->site_id;
+    $receiving_request['site_name']     = $rec_req->sitename->job_describe;
+    $receiving_request['requested_to']  = $rec_req->warehouse_id;
+    $receiving_request['ware_name']  = $rec_req->warename->name;
 
     session()->put('receiving_session', 1);
     session()->put('receiving_request', $receiving_request);
-        session()->put('receiving_data', $item);
+    session()->put('receiving_data', $item);
 
-        return redirect()->route('receivings.index');
+        return redirect()->route('receiving');
 
 
 
