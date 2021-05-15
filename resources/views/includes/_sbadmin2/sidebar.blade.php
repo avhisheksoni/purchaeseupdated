@@ -270,6 +270,11 @@
       <i class="fas fa-fw fa-chart-area"></i>
       <span class="admin_css">Stock Transfer</span></a>
   </li>
+  <li class="nav-item">
+    <a class="nav-link" href="{{ route('approve_dc') }}">
+      <i class="fas fa-fw fa-chart-area"></i>
+      <span class="admin_css">Approve Stock Transfer</span></a>
+  </li>
 	@endrole
 
   <!-- @role("ratlam_warehouse"||"indore_warehouse")

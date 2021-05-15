@@ -37,4 +37,8 @@ class item extends Model
     public function wtwoo(){
         return $this->belongsTo('App\Model\store_inventory\StoreItem', 'id', 'item_id')->where('warehouse_id',2);
     }
+
+     public function purchaseStoreQty(){
+        return $this->hasMany('App\purchase_stored_item', 'item_number', 'item_number');
+    }
 }

@@ -21,4 +21,8 @@ class Receivings extends Model
     public function warehouse(){
     	return $this->belongsTo('App\PurchaseWarehouse', 'warehouse_id');
     }
+
+     public function users(){
+      return $this->belongsTo('App\User', 'dispatcher_id');
+    }
 }

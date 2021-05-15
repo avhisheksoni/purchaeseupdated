@@ -153,17 +153,24 @@ Route::get('receiving', 'receivings\ReceivingsController@index')->name('receivin
 Route::post('get_receiving_item', 'receivings\ReceivingsController@fetchItems')->name('get_receiving_item');
 Route::post('receivings_item_save', 'receivings\ReceivingsController@store')->name('receivings_item_save');
 Route::post('save_receiving_items', 'receivings\ReceivingsController@saveReceivingItems')->name('save_receiving_items');
-
 Route::get('generate_dc', 'receivings\ReceivingsController@generateDC')->name('generate_dc');
-
-// Route::resource('receiving_chalan', 'receivings\chalanController');
-Route::get('/receiving_chalan/{id}','receivings\chalanController@show');
-
-Route::get('manage_transfer', 'receivings\ManagetransferController@index')->name('manage_transfer');
-
+Route::get('decline_dc/{id}', 'receivings\ReceivingsController@declineDC')->name('decline_dc');
 Route::get('session_distroy', 'receivings\ReceivingsController@sessionDistroy')->name('session_distroy');
 Route::post('remove_entry_session', 'receivings\ReceivingsController@remove_entry_session')->name('remove_entry_session');
+
+Route::get('/receiving_chalan/{id}','receivings\chalanController@show');
+Route::get('see_chalan/{id}', 'receivings\chalanController@show')->name('see_chalan');
+
+Route::get('manage_transfer', 'receivings\ManagetransferController@index')->name('manage_transfer');
 Route::get('site_item_req/{id}', 'receivings\ManagetransferController@sitereq')->name('site_item_req');
+Route::get('freceiving/{id}', 'receivings\ManagetransferController@freceiving')->name('freceiving');
+
+    /*----------Approve Stock Transfer---------*/
+Route::get('approve_dc', 'receivings\ApproveTransferController@index')->name('approve_dc');
+Route::get('admin_approve/{id}', 'receivings\ApproveTransferController@adminApprove')->name('admin_approve');
+Route::get('super_admin_approve/{id}', 'receivings\ApproveTransferController@superAdminApprove')->name('super_admin_approve');
+Route::get('decline_by_admins/{id}', 'receivings\ApproveTransferController@declineDC')->name('decline_by_admins');
+
 /*   Receivings   end    */
 
 

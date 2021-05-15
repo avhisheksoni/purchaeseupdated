@@ -30,14 +30,28 @@ class ManagetransferController extends Controller
      */
     public function index()
     {    
+       $stock = item::has('purchaseStoreQty')
+                    ->select('id', 'item_number', 'title', 'unit_id')
+                    ->with(['purchaseStoreQty' => function($query){
+                        $query->orderBy('warehouse_id');
+                    }, 'unit'])->get();
+                    // dd($items);
         $recreq =  ReceivingsRequest::all();
-        return view('receivings.manage_transfer',compact('recreq'));
+        $recving =  Receivings::all();
+        //$stock =  purchase_stored_item::all();
+        return view('receivings.manage_transfer',compact('recreq','recving','stock'));
     }
 
 
     public function sitereq($id){
         $recrq = ReceivingsRequestItem::where('receiving_request_id',$id)->get();
         return view('receivings.requested_items',compact('recrq'));
+    }
+
+    public function freceiving($id){
+
+         $receitem = ReceivingsItem::where('receiving_id',$id)->get();
+         return  view('receivings.freceving',compact('receitem'));
     }
 
     
