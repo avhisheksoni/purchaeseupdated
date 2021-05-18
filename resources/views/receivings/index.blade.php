@@ -14,7 +14,7 @@
             <br><br>
 
             <div class="panel-body form-group">
-                
+
                 @if(session()->has('receiving_session'))
                 <br>
                 <div class="row">
