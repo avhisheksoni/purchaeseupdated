@@ -275,6 +275,11 @@
       <i class="fas fa-fw fa-chart-area"></i>
       <span class="admin_css">Approve Stock Transfer</span></a>
   </li>
+  <li class="nav-item">
+    <a class="nav-link" href="{{ route('users') }}">
+      <i class="fas fa-fw fa-chart-area"></i>
+      <span class="admin_css">User Management</span></a>
+  </li>
 	@endrole
 
   <!-- @role("ratlam_warehouse"||"indore_warehouse")

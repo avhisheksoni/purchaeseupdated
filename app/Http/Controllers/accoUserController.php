@@ -10,6 +10,7 @@ use App\Users;
 use App\sites;
 use Carbon\Carbon;
 use App\Warehouse;
+use App\acco_users;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Model\store_inventory\StoreItem;
@@ -29,8 +30,20 @@ class accoUserController extends Controller
      */
     public function index()
     {
-        $warehouse = Warehouse::latest()->paginate(10);
-        return view('warehouse',compact('warehouse'))->with('i', (request()->input('page', 1) - 1) * 10);
+        $acc_user = acco_users::with('user_name', 'site')->get();
+
+        $users = [];
+        $sites = [];
+        foreach($acc_user as $user){
+            $users[] = $user->user_id;
+            $sites[] = $user->site_id;
+        }
+
+        $sites = sites::whereNotIn('id', $sites)->get();
+        $users = Users::whereNotIn('id', $users)->get();
+        //dd($acc_user);
+        //return view('users.index');
+        return view('users.index',compact('sites', 'users', 'acc_user', 'site'));
     }
 
     /**
@@ -38,77 +51,19 @@ class accoUserController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function userAdd(Request $request)
     {
-        //
+        //dd($request->all());
+        $data = new acco_users;
+        $data->user_id = $request->input('user');
+        $data->site_id = $request->input('site');
+        $data->short_name = $request->input('short_name');
+        $data->comment = $request->input('comment');
+        $data->save ();
+        return redirect()->route('users');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        $validation = Validator::make($request->all(), [
-            'name' => 'unique:prch_warehouses',
-            'description' => ''
-        ]);
-        if ($validation->fails())
-        {
-            return "The Warehouse Name has already been taken";
-        }
-        else
-        {
-            $data = new Warehouse;
-            $data->name = $request->input('name');
-            $data->description = $request->input('description');
-            $data->save ();
-            return 'Warehouse added';
-        }
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Warehouse  $warehouse
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Warehouse $warehouse)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Warehouse  $warehouse
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Warehouse $warehouse)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Warehouse  $warehouse
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Warehouse $warehouse)
-    {
-        Warehouse::where('id', $request->input('id'))->update(['name'=> $request->input('name'), 'description' => $request->input('description')]);
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Warehouse  $warehouse
-     * @return \Illuminate\Http\Response
-     */
+    
     public function destroy($id)
     {
         Warehouse::find($id)->delete();

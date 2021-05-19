@@ -35,9 +35,15 @@ class chalanController extends Controller
 
     public function show($id)
     {
+      
       $rec_chalan = Receivings::with(['warehouse', 'site'])->where('id', $id)->first();
       $chalan_item = ReceivingsItem::with('item')->where('receiving_id', $id)->get();
       //dd([$chalan_item,$rec_chalan]);
       return view('receivings.chalan', compact('rec_chalan', 'chalan_item'));
+    }
+
+    public function back(){
+
+      return redirect()->route('receiving');
     }
 }

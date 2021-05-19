@@ -74,7 +74,7 @@
   .items-dropdown > li{
     padding: 5px !important;
     border-bottom: 1px solid #8c4949 !important;
-  }
+}
 </style>
 
 <script type="text/javascript" charset="utf8" src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.7.1.min.js"></script>
@@ -83,6 +83,7 @@
 
 <script>
 $(document).ready(function(){
+	
   var final_total_amt = $('#final_total_amt').text();
   var count = 1;
 

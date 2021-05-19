@@ -1,10 +1,22 @@
-@extends('../layouts.sbadmin2')
-@section('content')
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>YOLAX INFRAENERGY</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+</head>
+<body>
 
 <div class="container">
 	<div class="row">
 		<div class="col-md-8">
-			
+			<div class="col-md-1 pull-left">
+		  <a href="{{ route('back') }}" ><div class="btn btn-info btn-sm"><span class="glyphicon glyphicon-print">&nbsp;</span>Back</div></a>
+		  <!-- <a href="#" ><div class="btn btn-info btn-sm" id="show_list_button"><span class="glyphicon glyphicon-print">&nbsp;</span>Show Item List</div></a> -->
+		</div>&nbsp;
 		</div>
 		<div class="col-md-3">
 		    <select class="pull-right">
@@ -131,6 +143,9 @@
 		  	</div>
 	</div>
 </div>
+</div>
+</body>
+</html>
 
 
 <!-- <script>
@@ -151,4 +166,3 @@
 </script>
  -->
 
-@endsection

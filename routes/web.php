@@ -164,6 +164,7 @@ Route::get('see_chalan/{id}', 'receivings\chalanController@show')->name('see_cha
 Route::get('manage_transfer', 'receivings\ManagetransferController@index')->name('manage_transfer');
 Route::get('site_item_req/{id}', 'receivings\ManagetransferController@sitereq')->name('site_item_req');
 Route::get('freceiving/{id}', 'receivings\ManagetransferController@freceiving')->name('freceiving');
+Route::get('back', 'receivings\chalanController@back')->name('back');
 
     /*----------Approve Stock Transfer---------*/
 Route::get('approve_dc', 'receivings\ApproveTransferController@index')->name('approve_dc');
@@ -173,7 +174,12 @@ Route::get('decline_by_admins/{id}', 'receivings\ApproveTransferController@decli
 
 /*   Receivings   end    */
 
+/*--------------- User Module Start--------------------------------*/
 
+Route::get('users', 'accoUserController@index')->name('users');
+Route::post('user_add', 'accoUserController@userAdd')->name('user_add');
+
+/*--------------- User Module Start--------------------------------*/
 
 
 /*$cat_id = 01;
