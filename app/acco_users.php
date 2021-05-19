@@ -3,16 +3,18 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class acco_users extends Model
 {
+    use SoftDeletes;
     protected $table= 'acco_users';
     protected $guarded = [];
     public $timestamps = true;
 
     public function user_name()
     {
-    	return $this->hasOne('App\Users', 'id');
+    	return $this->belongsTo('App\Users', 'id');
     }
 
     public function site(){

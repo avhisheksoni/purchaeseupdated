@@ -9,6 +9,10 @@
          Allote site wise user
         </button>
       </div>&nbsp;&nbsp;&nbsp;
+       @if($message = Session::get('message'))
+      <div class="alert alert-success">  {{$message}}
+      </div>
+      @endif 
       <div class="col-md-12">
         <table class="sales_table_100 border" id="customers" style="background-color: #e6e6e6; width: 100%;">
           <thead>
@@ -23,11 +27,11 @@
           <tbody>
           @foreach($acc_user as $acc_usr)
            <tr style="text-align: center;">
-            <td> {{ $acc_usr->user_name->name }} </td>
+            <td> {{App\Users::find($acc_usr->user_id)->name }}{{-- {{ $acc_usr->user_name->name }} --}} </td>
             <td> {{ $acc_usr->site->job_code }} </td>
             <td> {{ $acc_usr->short_name }} </td>
             <td> {{ $acc_usr->comment }} </td>
-            <td> {{ $acc_usr->user_id }} </td>
+            <td><a href="{{ route('edit_acco_user',$acc_usr->id)}}"><button class="btn btn-primary mr-2"><i class="fa fa-lg fa-edit"></i></button></a><a href="{{ route('delete_acco_user',$acc_usr->id)}}" onclick="return confirm('Are you sure want to remove ?')" ><button class="btn btn-danger"><i class="fa fa-lg fa-trash"></i></button></a></td>
            </tr>
           @endforeach
           </tbody>
@@ -57,7 +61,7 @@
                     <select class="form-control" width="100" required="" name="site">
                       <option selected=""> -- select -- </option>
                       @foreach($sites as $site)
-                        <option value="{{$site->id}}" width="100">{{$site->job_describe.' || '.$site->job_code}}</option>
+                        <option value="{{$site->id}}">{{$site->job_describe.' || '.$site->job_code}}</option>
                       @endforeach
                     </select>
                 </div>&nbsp;

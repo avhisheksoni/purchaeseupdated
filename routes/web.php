@@ -178,6 +178,9 @@ Route::get('decline_by_admins/{id}', 'receivings\ApproveTransferController@decli
 
 Route::get('users', 'accoUserController@index')->name('users');
 Route::post('user_add', 'accoUserController@userAdd')->name('user_add');
+Route::get('edit_acco_user/{id}', 'accoUserController@editaccouser')->name('edit_acco_user');
+Route::post('ac_siteuser_update/{id}', 'accoUserController@acsiteuserupdate')->name('ac_siteuser_update');
+Route::get('delete_acco_user/{id}', 'accoUserController@deleteaccouser')->name('delete_acco_user');
 
 /*--------------- User Module Start--------------------------------*/
 

@@ -38,7 +38,7 @@ class accoUserController extends Controller
             $users[] = $user->user_id;
             $sites[] = $user->site_id;
         }
-
+        
         $sites = sites::whereNotIn('id', $sites)->get();
         $users = Users::whereNotIn('id', $users)->get();
         //dd($acc_user);
@@ -68,5 +68,33 @@ class accoUserController extends Controller
     {
         Warehouse::find($id)->delete();
         return redirect()->route('warehouse.index')->with('success','Category deleted successfully');
+    }
+
+    public function editaccouser($id){
+
+        $edit = acco_users::find($id);
+        $site = acco_users::where('site_id','!=',$edit->site_id)->pluck('site_id');
+        $user = acco_users::where('user_id','!=',$edit->user_id)->pluck('user_id');
+
+        return view('users.edit',compact('edit','site','user'));
+    }
+
+    public function acsiteuserupdate(Request $request,$id){
+
+         $data = $request->validate([   
+          'user_id'=>'required', 
+          'site_id'=>'required',      
+          'short_name'=>'required',
+          'comment'=>'nullable',
+          ]);
+        
+        acco_users::where('id',$id)->update($data);
+        return redirect('users')->with('message','Successfully Updated');;
+    }
+
+    public function deleteaccouser($id){
+
+         $dservice = acco_users::where('id', $id)->delete();
+      return redirect()->back()->with('message','Successfully Removed From List');
     }
 }
