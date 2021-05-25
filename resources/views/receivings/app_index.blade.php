@@ -62,6 +62,7 @@
 			                		<h5 style="color: red">Declined</h5>
 			                	@endif
 			                </td>
+			               {{--  @role(['purchase_superadmin']) --}}
 			                <td>
 			                	@if($rec->admin == '0')
 				                	<a href="#"><button type="button" class="btn btn-success btn-sm" disabled="" style="color: white">Approve</button></a>
@@ -79,6 +80,7 @@
 			                		@endif
 			                	@endif
 			                </td>
+			              {{--   @endrole --}}
 			             </tr>
 			            @endforeach
 			          </tbody>
